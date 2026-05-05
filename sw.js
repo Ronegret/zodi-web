@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zodi-pwa-v6-mobile-visual-polish';
+const CACHE_NAME = 'zodi-pwa-v7-profile-plan-polish';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -7,8 +7,8 @@ const APP_SHELL = [
   '/zodi-logo.png',
   '/bg-video.mp4',
   '/zodi-google-bridge-v20260505.js',
-  '/zodi-production-polish-v20260505b.js',
-  '/zodi-ux-polish-v20260505b.css'
+  '/zodi-production-polish-v20260505c.js',
+  '/zodi-ux-polish-v20260505c.css'
 ];
 
 self.addEventListener('install', event => {
