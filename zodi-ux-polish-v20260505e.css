@@ -450,6 +450,44 @@
   text-shadow: none !important;
 }
 
+/* Final contrast pass: keep numerology readable on every viewport. */
+.z-num-card.acid,
+.z-card.z-num-card.acid,
+article.z-num-card.acid {
+  background: #b4ff20 !important;
+  color: #071006 !important;
+  border-color: #b4ff20 !important;
+  box-shadow: 0 22px 70px rgba(180,255,32,.18) !important;
+}
+
+.z-num-card.acid *,
+.z-card.z-num-card.acid *,
+article.z-num-card.acid * {
+  color: #071006 !important;
+  text-shadow: none !important;
+}
+
+.z-num-card.purple,
+.z-card.z-num-card.purple,
+article.z-num-card.purple {
+  background: #16122a !important;
+  color: #f5f1e8 !important;
+  border-color: rgba(155,111,232,.75) !important;
+}
+
+.z-num-card.purple *,
+.z-card.z-num-card.purple *,
+article.z-num-card.purple * {
+  color: #f5f1e8 !important;
+  text-shadow: none !important;
+}
+
+.z-num-card.purple .z-num-value,
+.z-card.z-num-card.purple .z-num-value,
+article.z-num-card.purple .z-num-value {
+  color: #d8c5ff !important;
+}
+
 .zodi-rich-content {
   font-size: 15px;
   line-height: 1.85;
@@ -1263,10 +1301,11 @@ svg {
   place-items: center;
   border: 1px solid rgba(180,255,32,.35);
   background: rgba(180,255,32,.08);
-  color: #dfff78;
-  font-family: var(--z-font-heading);
-  font-size: 18px;
+  color: #f5f1e8;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", system-ui, sans-serif;
+  font-size: 27px;
   line-height: 1;
+  border-radius: 16px;
 }
 
 .z-service-copy h3 {
@@ -1288,6 +1327,15 @@ svg {
 }
 
 @media (max-width: 900px) {
+  html,
+  body,
+  #root,
+  .z-app-wrapper,
+  .z-main-area {
+    max-width: 100vw !important;
+    overflow-x: clip !important;
+  }
+
   .z-panel-scroll {
     overflow-x: clip !important;
     overscroll-behavior-x: none;
@@ -1314,6 +1362,95 @@ svg {
 }
 
 @media (max-width: 768px) {
+  .mobile-header {
+    height: calc(64px + env(safe-area-inset-top)) !important;
+    min-height: calc(64px + env(safe-area-inset-top)) !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1100 !important;
+    overflow: visible !important;
+    background: rgba(7, 7, 15, .94) !important;
+    backdrop-filter: blur(16px) !important;
+    border-bottom: 1px solid rgba(245,241,232,.12) !important;
+  }
+
+  [data-z-mobile-header-shell="true"],
+  .mobile-header > div:first-child {
+    height: 100% !important;
+    display: grid !important;
+    grid-template-columns: 54px minmax(0, 1fr) 54px !important;
+    align-items: center !important;
+    padding: env(safe-area-inset-top) 12px 0 !important;
+    overflow: hidden !important;
+    background: transparent !important;
+  }
+
+  [data-z-mobile-logo="true"],
+  .mobile-header img[src*="zodi-logo"] {
+    width: auto !important;
+    height: auto !important;
+    max-width: 104px !important;
+    max-height: 38px !important;
+    object-fit: contain !important;
+    display: block !important;
+  }
+
+  [data-z-mobile-menu-button="true"] {
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 14px !important;
+    background: rgba(245,241,232,.08) !important;
+    border: 1px solid rgba(245,241,232,.22) !important;
+    box-shadow: 0 12px 28px rgba(0,0,0,.28) !important;
+    justify-self: end !important;
+  }
+
+  [data-z-mobile-menu-button="true"] div {
+    height: 2px !important;
+    background: #f5f1e8 !important;
+    border-radius: 999px !important;
+  }
+
+  [data-z-mobile-scrim="true"] {
+    z-index: 1190 !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    background: rgba(0,0,0,.62) !important;
+    backdrop-filter: blur(8px) !important;
+  }
+
+  [data-z-mobile-drawer="true"] {
+    z-index: 1200 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    width: min(88vw, 360px) !important;
+    max-width: min(88vw, 360px) !important;
+    padding: calc(env(safe-area-inset-top) + 18px) 18px calc(env(safe-area-inset-bottom) + 24px) !important;
+    background: #090912 !important;
+    border-right: 1px solid rgba(180,255,32,.45) !important;
+    box-shadow: 24px 0 70px rgba(0,0,0,.56) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  [data-z-mobile-drawer="true"] img[src*="zodi-logo"] {
+    width: auto !important;
+    height: auto !important;
+    max-width: 142px !important;
+    max-height: 46px !important;
+    object-fit: contain !important;
+  }
+
+  [data-z-mobile-drawer="true"] button {
+    border-radius: 14px !important;
+    min-width: 0 !important;
+  }
+
   body {
     background-size: 34px 34px !important;
   }
@@ -1358,4 +1495,42 @@ svg {
     max-width: 100vw !important;
     overflow: hidden !important;
   }
+}
+
+/* Final contrast pass: keep numerology readable after the minified base CSS. */
+.z-num-card.acid,
+.z-card.z-num-card.acid,
+article.z-num-card.acid {
+  background: #b4ff20 !important;
+  color: #071006 !important;
+  border-color: #b4ff20 !important;
+  box-shadow: 0 22px 70px rgba(180,255,32,.18) !important;
+}
+
+.z-num-card.acid *,
+.z-card.z-num-card.acid *,
+article.z-num-card.acid * {
+  color: #071006 !important;
+  text-shadow: none !important;
+}
+
+.z-num-card.purple,
+.z-card.z-num-card.purple,
+article.z-num-card.purple {
+  background: #16122a !important;
+  color: #f5f1e8 !important;
+  border-color: rgba(155,111,232,.75) !important;
+}
+
+.z-num-card.purple *,
+.z-card.z-num-card.purple *,
+article.z-num-card.purple * {
+  color: #f5f1e8 !important;
+  text-shadow: none !important;
+}
+
+.z-num-card.purple .z-num-value,
+.z-card.z-num-card.purple .z-num-value,
+article.z-num-card.purple .z-num-value {
+  color: #d8c5ff !important;
 }

@@ -18,8 +18,6 @@ const directFixes = new Map([
   ["\uFFFDS\uFFFD", ""],
   ["\uFFFDX-\uFFFD", ""],
   ["\uFFFD", ""],
-  ["ðŸ”®", "ZODI"],
-  ["Â·", "·"],
   ["ZODI_USER_PROFILE", "Mi perfil"],
   ["SISTEMA_VITAL", "Datos personales"],
   ["N\uFFFDaCLEO_ASTRAL", "Lectura base"],
@@ -103,6 +101,18 @@ function repairTextNodes(root = document.body) {
   }
 }
 
+function repairAttributes(root = document) {
+  const scope = root instanceof Element ? root : document;
+  scope.querySelectorAll("[placeholder], [aria-label], [title], [alt]").forEach(node => {
+    ["placeholder", "aria-label", "title", "alt"].forEach(attr => {
+      const value = node.getAttribute(attr);
+      if (!value) return;
+      const repaired = repairText(value);
+      if (repaired !== value) node.setAttribute(attr, repaired);
+    });
+  });
+}
+
 function normalizeImages(root = document) {
   root.querySelectorAll('img[src*="/signs/"], img[src*="zodi-logo"], .z-sidebar-logo img').forEach(img => {
     img.decoding = "async";
@@ -123,10 +133,45 @@ function cleanButtons(root = document) {
   });
 }
 
+function polishMobileNavigation(root = document) {
+  const header = document.querySelector(".mobile-header");
+  if (header) {
+    const shell = header.firstElementChild;
+    if (shell) shell.setAttribute("data-z-mobile-header-shell", "true");
+    const logo = header.querySelector('img[src*="zodi-logo"]');
+    if (logo) logo.setAttribute("data-z-mobile-logo", "true");
+    const menuButton = Array.from(header.querySelectorAll("div")).find(node => {
+      const style = getComputedStyle(node);
+      return style.cursor === "pointer" && style.flexDirection === "column" && style.gap !== "normal";
+    });
+    if (menuButton) {
+      menuButton.setAttribute("data-z-mobile-menu-button", "true");
+      menuButton.setAttribute("role", "button");
+      menuButton.setAttribute("aria-label", "Abrir menu");
+    }
+  }
+
+  document.querySelectorAll("div").forEach(node => {
+    const style = node.style;
+    if (style.position === "fixed" && style.zIndex === "1001" && style.width) {
+      node.setAttribute("data-z-mobile-drawer", "true");
+      const closeButton = node.querySelector("button");
+      if (closeButton && closeButton.textContent.trim() === "\u00d7") {
+        closeButton.setAttribute("aria-label", "Cerrar menu");
+      }
+    }
+    if (style.position === "fixed" && style.zIndex === "1000" && style.background.includes("rgba")) {
+      node.setAttribute("data-z-mobile-scrim", "true");
+    }
+  });
+}
+
 function runPolish(root) {
   repairTextNodes(root);
+  repairAttributes(root instanceof Element ? root : document);
   normalizeImages(root instanceof Element ? root : document);
   cleanButtons(root instanceof Element ? root : document);
+  polishMobileNavigation(root instanceof Element ? root : document);
 }
 
 const observer = new MutationObserver(records => {
