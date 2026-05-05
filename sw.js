@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zodi-pwa-v4-rich-readings';
+const CACHE_NAME = 'zodi-pwa-v5-hostinger-fresh';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -6,8 +6,8 @@ const APP_SHELL = [
   '/favicon.svg',
   '/zodi-logo.png',
   '/bg-video.mp4',
-  '/zodi-google-bridge.js',
-  '/zodi-ux-polish.css'
+  '/zodi-google-bridge-v20260505.js',
+  '/zodi-ux-polish-v20260505.css'
 ];
 
 self.addEventListener('install', event => {
@@ -27,12 +27,41 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const request = event.request;
   if (request.method !== 'GET') return;
+
+  const url = new URL(request.url);
+  const freshFirst =
+    request.mode === 'navigate' ||
+    url.pathname.endsWith('.html') ||
+    url.pathname.endsWith('.js') ||
+    url.pathname.endsWith('.css') ||
+    url.pathname.endsWith('.webmanifest');
+
   event.respondWith(
-    caches.match(request).then(cached => {
-      if (cached) return cached;
+    (freshFirst
+      ? fetch(request)
+          .then(response => {
+            const copy = response.clone();
+            if (response.ok && url.origin === self.location.origin) {
+              caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+            }
+            return response;
+          })
+          .catch(() => caches.match(request))
+      : caches.match(request).then(cached => {
+          if (cached) return cached;
+          return fetch(request).then(response => {
+            const copy = response.clone();
+            if (response.ok && url.origin === self.location.origin) {
+              caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+            }
+            return response;
+          });
+        })
+    ).then(response => {
+      if (response) return response;
       return fetch(request).then(response => {
         const copy = response.clone();
-        if (response.ok && new URL(request.url).origin === self.location.origin) {
+        if (response.ok && url.origin === self.location.origin) {
           caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
         }
         return response;
