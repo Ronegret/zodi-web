@@ -305,7 +305,54 @@
     flex: 0 0 auto !important;
   }
 
-  .z-perfil-panel .z-grid {
+.z-perfil-panel .z-grid {
     grid-template-columns: 1fr !important;
+  }
+}
+
+.zodi-rich-content {
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.zodi-rich-content strong {
+  color: var(--z-acid);
+  font-weight: 900;
+}
+
+.z-rich-mini {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+  color: var(--z-bone-dim);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.z-rich-mini p,
+.z-compat-why {
+  margin: 0;
+}
+
+.z-rich-mini strong,
+.z-compat-why strong {
+  color: var(--z-bone);
+}
+
+.z-compat-why {
+  margin: 0 0 24px;
+  color: var(--z-bone-dim);
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .z-name-result-grid,
+  .z-num-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .zodi-rich-content {
+    font-size: 14px;
+    line-height: 1.78;
   }
 }

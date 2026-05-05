@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zodi-pwa-v3-google-ux';
+const CACHE_NAME = 'zodi-pwa-v4-rich-readings';
 const APP_SHELL = [
   '/',
   '/index.html',
