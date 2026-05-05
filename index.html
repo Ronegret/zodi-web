@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#05020d" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="ZODI" />
+    <title>ZODI — La app de astrología que te mereces</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script type="module" crossorigin src="/assets/index-DtrG1ZDG.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/jsx-runtime-2UHhqg_S.js">
+    <link rel="modulepreload" crossorigin href="/assets/firebase-Da5Ak7kD.js">
+    <link rel="modulepreload" crossorigin href="/assets/proxy-juyD3h56.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-QmMRBQJv.css">
+    <link rel="stylesheet" href="/zodi-ux-polish.css?v=5" />
+    <script type="module" src="/zodi-google-bridge.js?v=3"></script>
+  </head>
+  <body>
+    <div id="cursor"><div class="cur-dot" id="curDot"></div></div>
+    <div id="root"></div>
+    <script>
+      // Only load cursor effect on non-touch devices
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        var s = document.createElement('script');
+        s.src = '/splash-cursor.js';
+        document.body.appendChild(s);
+      }
+    </script>
+  </body>
+</html>

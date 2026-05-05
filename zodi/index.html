@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZODI — La astrología que te mereces</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --acid:#AAFF00; --acid2:#c4ff33; --acid-dim:rgba(170,255,0,0.10); --acid-glow:rgba(170,255,0,0.35);
+  --purple:#6C3DC8; --purple-light:#9B6FE8; --purple-dim:rgba(108,61,200,0.18);
+  --bone:#F5F1E8; --bone-dim:rgba(245,241,232,0.6); --bone-faint:rgba(245,241,232,0.3);
+  --black:#07070f; --dark:#0e0d18; --d2:#161525; --d3:#1d1b2c;
+  --gray:#7a7690; --border:rgba(255,255,255,0.07); --border-acid:rgba(170,255,0,0.22);
+  --font-d:'Syne',sans-serif; --font-s:'Instrument Serif',serif; --font-m:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{background:var(--black);color:var(--bone);font-family:var(--font-d);overflow-x:hidden;cursor:none}
+::selection{background:var(--acid);color:var(--black)}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--dark)}::-webkit-scrollbar-thumb{background:var(--acid)}
+
+/* ── CUSTOM CURSOR ── */
+#cursor{position:fixed;pointer-events:none;z-index:99999;top:0;left:0}
+.cur-dot{position:absolute;width:5px;height:5px;background:rgba(255,255,255,0.9);border-radius:50%;transform:translate(-50%,-50%);transition:opacity .2s}
+
+/* ── SMOKE CANVAS ── */
+#smokeCanvas{position:fixed;inset:0;pointer-events:none;z-index:9998;opacity:1}
+
+/* ── NOISE OVERLAY ── */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9997;opacity:.5;mix-blend-mode:overlay}
+
+/* ── GRID BG ── */
+.grid-bg{background-image:linear-gradient(rgba(170,255,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(170,255,0,0.03) 1px,transparent 1px);background-size:44px 44px}
+
+/* ── NAVBAR ── */
+#navbar{position:fixed;top:0;left:0;right:0;z-index:5000;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;transition:background .3s,border-color .3s}
+#navbar.scrolled{background:rgba(7,7,15,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nb-logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
+.nb-logo img{height:32px;filter:drop-shadow(0 0 12px rgba(170,255,0,0.5))}
+.nb-logo-txt{font-size:22px;font-weight:800;color:var(--acid);letter-spacing:-1px}
+.nb-links{display:flex;align-items:center;gap:6px}
+.nb-link{font-family:var(--font-m);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray);padding:8px 14px;border-radius:4px;cursor:pointer;transition:.18s;border:1px solid transparent;background:none}
+.nb-link:hover{color:var(--bone);border-color:var(--border)}
+.nb-cta{background:var(--acid);color:var(--black);font-family:var(--font-m);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:10px 22px;border-radius:4px;border:none;cursor:pointer;transition:.18s}
+.nb-cta:hover{background:var(--acid2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(170,255,0,.3)}
+
+/* ── HERO ── */
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 24px 60px;position:relative;overflow:hidden}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none;animation:orb-drift 18s ease-in-out infinite}
+.hero-orb1{width:600px;height:600px;background:rgba(108,61,200,.12);top:-150px;right:-150px;animation-delay:0s}
+.hero-orb2{width:400px;height:400px;background:rgba(170,255,0,.06);bottom:-100px;left:-100px;animation-delay:-9s}
+.hero-orb3{width:300px;height:300px;background:rgba(108,61,200,.08);top:30%;left:20%;animation-delay:-5s}
+@keyframes orb-drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.1)}66%{transform:translate(-25px,20px) scale(.95)}}
+
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(170,255,0,0.08);border:1px solid rgba(170,255,0,0.25);border-radius:20px;padding:6px 16px;margin-bottom:28px;animation:fade-up .6s ease both}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--acid);animation:pulse 2s ease infinite}
+.hero-badge-txt{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--acid)}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.5)}}
+
+.hero-logo-img{height:80px;margin-bottom:12px;filter:drop-shadow(0 0 40px rgba(170,255,0,.5));animation:fade-up .6s .1s ease both, logo-glow 3s ease infinite;display:block;margin-left:auto;margin-right:auto}
+@keyframes logo-glow{0%,100%{filter:drop-shadow(0 0 30px rgba(170,255,0,.4))}50%{filter:drop-shadow(0 0 60px rgba(170,255,0,.8))}}
+
+.hero-h1{font-family:var(--font-s);font-style:italic;font-size:clamp(48px,9vw,100px);line-height:1;margin-bottom:16px;animation:fade-up .6s .2s ease both}
+.hero-h1 b{font-style:normal;font-family:var(--font-d);font-weight:800;color:var(--acid)}
+.hero-h1 .line2{display:block;font-size:clamp(36px,7vw,80px)}
+.hero-sub{font-size:clamp(15px,2vw,18px);color:var(--bone-dim);line-height:1.7;max-width:520px;margin:0 auto 36px;animation:fade-up .6s .3s ease both}
+.hero-cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fade-up .6s .4s ease both}
+.btn-acid-lg{background:var(--acid);color:var(--black);font-family:var(--font-m);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:16px 36px;border-radius:5px;border:none;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn-acid-lg:hover{background:var(--acid2);transform:translateY(-2px);box-shadow:0 12px 36px rgba(170,255,0,.35)}
+.btn-outline-lg{background:transparent;color:var(--bone);font-family:var(--font-m);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:16px 36px;border-radius:5px;border:1.5px solid var(--border);cursor:pointer;transition:.2s}
+.btn-outline-lg:hover{border-color:var(--acid);color:var(--acid)}
+.hero-scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;animation:fade-up .6s .8s ease both}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--acid),transparent);animation:scroll-line 2s ease infinite}
+@keyframes scroll-line{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ── REVEAL ANIMATIONS ── */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-50px);transition:opacity .7s ease,transform .7s ease}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(50px);transition:opacity .7s ease,transform .7s ease}
+.reveal-right.visible{opacity:1;transform:translateX(0)}
+.reveal-scale{opacity:0;transform:scale(.9);transition:opacity .6s ease,transform .6s ease}
+.reveal-scale.visible{opacity:1;transform:scale(1)}
+
+/* ── SECTIONS ── */
+.section{padding:100px 24px;max-width:1100px;margin:0 auto}
+.section-label{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--acid);margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.section-label::before{content:'';width:24px;height:1px;background:var(--acid)}
+.section-h2{font-family:var(--font-s);font-style:italic;font-size:clamp(36px,6vw,64px);line-height:1.05;margin-bottom:16px}
+.section-h2 b{font-style:normal;font-family:var(--font-d);font-weight:800;color:var(--acid)}
+
+/* ── FEATURES ── */
+#features{padding:100px 24px;background:linear-gradient(to bottom,transparent,rgba(108,61,200,.04),transparent)}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:56px}
+.feat-card{background:var(--d2);border:1px solid var(--border);border-radius:10px;padding:28px;position:relative;overflow:hidden;transition:border-color .3s,transform .3s}
+.feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .3s}
+.feat-card:hover{border-color:rgba(170,255,0,.2);transform:translateY(-4px)}
+.feat-card:hover::before{opacity:1}
+.feat-card.acid::before{background:linear-gradient(90deg,var(--acid),var(--purple))}
+.feat-card.purple::before{background:linear-gradient(90deg,var(--purple),var(--purple-light))}
+.feat-card.red::before{background:linear-gradient(90deg,#FF4444,#ff8888)}
+.feat-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px}
+.feat-icon.acid{background:rgba(170,255,0,.1);border:1px solid rgba(170,255,0,.2)}
+.feat-icon.purple{background:rgba(108,61,200,.15);border:1px solid rgba(108,61,200,.3)}
+.feat-icon.red{background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.2)}
+.feat-title{font-size:17px;font-weight:700;margin-bottom:8px}
+.feat-desc{font-size:13px;color:var(--bone-dim);line-height:1.7}
+.feat-badge{display:inline-block;font-family:var(--font-m);font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:3px;margin-top:12px;background:var(--acid-dim);border:1px solid var(--border-acid);color:var(--acid)}
+
+/* ── SIGNS MARQUEE ── */
+#signs-strip{padding:40px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;position:relative;background:rgba(170,255,0,.02)}
+.marquee-track{display:flex;gap:0;animation:marquee 30s linear infinite;width:max-content}
+.marquee-track:hover{animation-play-state:paused}
+.sign-chip{display:flex;align-items:center;gap:10px;padding:12px 24px;border-right:1px solid var(--border);cursor:default;transition:.2s;white-space:nowrap}
+.sign-chip:hover{background:rgba(170,255,0,.04)}
+.sign-chip-em{font-size:22px}
+.sign-chip-name{font-family:var(--font-m);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray)}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── FRANKNESS ── */
+#frankness{padding:100px 24px}
+.frank-demo{margin-top:48px;background:var(--d2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.frank-tabs{display:flex;border-bottom:1px solid var(--border)}
+.frank-tab{flex:1;padding:16px;text-align:center;font-family:var(--font-m);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray);cursor:pointer;transition:.18s;border-bottom:2px solid transparent}
+.frank-tab:hover{color:var(--bone);background:rgba(255,255,255,.02)}
+.frank-tab.on.suave{color:#88CCFF;border-bottom-color:#88CCFF}
+.frank-tab.on.normal{color:var(--acid);border-bottom-color:var(--acid)}
+.frank-tab.on.fuerte{color:#FF4444;border-bottom-color:#FF4444}
+.frank-content{padding:32px;min-height:160px;position:relative}
+.frank-msg{display:none;animation:fade-up .35s ease both}
+.frank-msg.on{display:block}
+.frank-msg-text{font-family:var(--font-s);font-style:italic;font-size:clamp(17px,2.5vw,22px);line-height:1.65;color:var(--bone)}
+.frank-sign{font-family:var(--font-m);font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;opacity:.5}
+.frank-level{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-m);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:3px;margin-top:16px}
+.frank-level.suave{background:rgba(136,204,255,.08);border:1px solid rgba(136,204,255,.2);color:#88CCFF}
+.frank-level.normal{background:var(--acid-dim);border:1px solid var(--border-acid);color:var(--acid)}
+.frank-level.fuerte{background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.2);color:#FF8888}
+
+/* ── PROFILE PREVIEW ── */
+#profile-preview{padding:100px 24px;overflow:hidden}
+.profile-showcase{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;margin-top:48px}
+.profile-card-demo{background:var(--d2);border:1px solid rgba(108,61,200,.3);border-radius:14px;overflow:hidden;position:relative}
+.profile-card-demo::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),var(--acid),var(--purple))}
+.pcd-header{padding:28px;background:linear-gradient(135deg,rgba(108,61,200,.15),rgba(170,255,0,.05))}
+.pcd-avatar-row{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.pcd-avatar{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--acid));display:flex;align-items:center;justify-content:center;font-size:28px;border:2px solid rgba(170,255,0,.3)}
+.pcd-name{font-size:20px;font-weight:800;margin-bottom:4px}
+.pcd-meta{font-family:var(--font-m);font-size:9px;color:var(--gray);text-transform:uppercase;letter-spacing:.08em}
+.pcd-badges{display:flex;flex-wrap:wrap;gap:8px}
+.pcd-badge{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:6px;padding:7px 12px}
+.pcd-badge-em{font-size:18px}
+.pcd-badge-info{min-width:0}
+.pcd-badge-label{font-family:var(--font-m);font-size:8px;color:var(--gray);text-transform:uppercase;letter-spacing:.07em}
+.pcd-badge-val{font-size:13px;font-weight:700;color:var(--bone);margin-top:1px}
+.pcd-body{padding:20px 28px 28px}
+.pcd-name-meaning{background:rgba(170,255,0,.04);border:1px solid rgba(170,255,0,.12);border-radius:8px;padding:14px;margin-top:4px}
+.pcd-nm-label{font-family:var(--font-m);font-size:8px;color:var(--acid);text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px}
+.pcd-nm-text{font-family:var(--font-s);font-style:italic;font-size:14px;color:var(--bone-dim);line-height:1.6}
+.profile-text-side{padding:20px 0}
+.profile-feat-list{list-style:none;margin-top:24px;display:flex;flex-direction:column;gap:14px}
+.pfl-item{display:flex;align-items:flex-start;gap:14px}
+.pfl-dot{width:6px;height:6px;border-radius:50%;background:var(--acid);flex-shrink:0;margin-top:7px}
+.pfl-text{font-size:15px;color:var(--bone-dim);line-height:1.6}
+.pfl-text b{color:var(--bone);font-weight:700}
+
+/* ── PRICING ── */
+#pricing{padding:100px 24px;background:linear-gradient(to bottom,transparent,rgba(108,61,200,.03),transparent)}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:56px}
+.plan-card{background:var(--d2);border:1px solid var(--border);border-radius:12px;padding:32px;position:relative;overflow:hidden;transition:.3s}
+.plan-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.15)}
+.plan-card.featured{border-color:rgba(170,255,0,.35);background:linear-gradient(135deg,rgba(170,255,0,.05),var(--d2))}
+.plan-card.featured::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--acid),var(--purple))}
+.plan-popular{position:absolute;top:16px;right:16px;background:var(--acid);color:var(--black);font-family:var(--font-m);font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px}
+.plan-name{font-family:var(--font-m);font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gray);margin-bottom:16px}
+.plan-price{display:flex;align-items:baseline;gap:4px;margin-bottom:6px}
+.plan-price-num{font-size:clamp(40px,5vw,56px);font-weight:800;line-height:1;color:var(--bone)}
+.plan-price-curr{font-size:22px;font-weight:700;color:var(--bone);align-self:flex-start;padding-top:8px}
+.plan-price-per{font-family:var(--font-m);font-size:11px;color:var(--gray);align-self:flex-end;padding-bottom:4px}
+.plan-period{font-family:var(--font-m);font-size:10px;color:var(--gray);margin-bottom:24px}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.plan-feat{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--bone-dim);line-height:1.5}
+.plan-feat-check{color:var(--acid);flex-shrink:0;margin-top:1px}
+.plan-feat-check.off{color:var(--gray)}
+.plan-cta{width:100%;font-family:var(--font-m);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px;border-radius:5px;border:none;cursor:pointer;transition:.2s}
+.plan-cta.acid{background:var(--acid);color:var(--black)}
+.plan-cta.acid:hover{background:var(--acid2);box-shadow:0 8px 24px rgba(170,255,0,.3)}
+.plan-cta.outline{background:transparent;color:var(--bone);border:1.5px solid var(--border)}
+.plan-cta.outline:hover{border-color:var(--acid);color:var(--acid)}
+.plan-save{font-family:var(--font-m);font-size:9px;color:var(--acid);margin-top:8px;text-align:center;letter-spacing:.08em;text-transform:uppercase}
+
+/* ── SOCIAL PROOF ── */
+#social{padding:80px 24px}
+.testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+.testi{background:var(--d2);border:1px solid var(--border);border-radius:10px;padding:22px;transition:.2s}
+.testi:hover{border-color:rgba(170,255,0,.15)}
+.testi-stars{color:var(--acid);font-size:14px;margin-bottom:12px;letter-spacing:2px}
+.testi-text{font-family:var(--font-s);font-style:italic;font-size:14px;color:var(--bone-dim);line-height:1.7;margin-bottom:16px}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;border:1.5px solid var(--border)}
+.testi-name{font-family:var(--font-m);font-size:10px;font-weight:700;color:var(--bone)}
+.testi-sign{font-family:var(--font-m);font-size:9px;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;margin-top:1px}
+
+/* ── CTA FINAL ── */
+#cta-final{padding:120px 24px;text-align:center;position:relative;overflow:hidden}
+.cta-orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
+.cta-orb1{width:500px;height:500px;background:rgba(170,255,0,.07);top:50%;left:50%;transform:translate(-50%,-50%)}
+.cta-h2{font-family:var(--font-s);font-style:italic;font-size:clamp(40px,8vw,80px);line-height:1;margin-bottom:16px;position:relative}
+.cta-h2 b{font-style:normal;font-family:var(--font-d);font-weight:800;color:var(--acid)}
+.cta-sub{font-size:16px;color:var(--bone-dim);max-width:420px;margin:0 auto 40px;line-height:1.7;position:relative}
+.cta-cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:40px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.footer-logo{display:flex;align-items:center;gap:8px}
+.footer-logo img{height:24px;opacity:.6}
+.footer-txt{font-family:var(--font-m);font-size:9px;color:var(--gray);letter-spacing:.06em}
+
+/* ── AUTH MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.modal-overlay.on{display:flex}
+.auth-modal{background:var(--d2);border:1px solid var(--border-acid);border-radius:14px;padding:36px;width:min(440px,calc(100vw - 32px));position:relative;animation:modal-in .35s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes modal-in{from{opacity:0;transform:scale(.92) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--gray);font-size:22px;cursor:pointer;line-height:1;transition:.18s}
+.modal-close:hover{color:var(--bone)}
+.auth-logo{height:36px;margin-bottom:8px;filter:drop-shadow(0 0 14px rgba(170,255,0,.4))}
+.auth-h{font-family:var(--font-s);font-style:italic;font-size:28px;margin-bottom:4px}
+.auth-sub{font-size:13px;color:var(--bone-dim);margin-bottom:24px;line-height:1.5}
+.auth-tabs{display:flex;background:rgba(0,0,0,.3);border-radius:6px;padding:3px;gap:3px;margin-bottom:24px}
+.auth-tab{flex:1;font-family:var(--font-m);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:9px;border-radius:4px;border:none;background:none;color:var(--gray);cursor:pointer;transition:.18s}
+.auth-tab.on{background:var(--d3);color:var(--bone)}
+.fgroup{margin-bottom:14px}
+.flabel{font-family:var(--font-m);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--acid);display:block;margin-bottom:6px}
+.finput{width:100%;background:rgba(7,7,15,.9);border:1.5px solid var(--border);border-radius:5px;color:var(--bone);font-family:var(--font-d);font-size:14px;padding:11px 14px;outline:none;transition:.18s}
+.finput:focus{border-color:rgba(170,255,0,.5);box-shadow:0 0 0 3px rgba(170,255,0,.06)}
+.finput::placeholder{color:var(--gray)}
+.auth-remember{display:flex;align-items:center;gap:8px;margin-bottom:18px;cursor:pointer;font-size:13px;color:var(--bone-dim)}
+.auth-remember input{width:15px;height:15px;accent-color:var(--acid);cursor:pointer}
+.auth-btn{width:100%;background:var(--acid);color:var(--black);font-family:var(--font-m);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px;border-radius:5px;border:none;cursor:pointer;transition:.18s;margin-bottom:12px}
+.auth-btn:hover{background:var(--acid2);box-shadow:0 8px 24px rgba(170,255,0,.25)}
+.auth-btn:disabled{opacity:.5;cursor:not-allowed}
+.auth-err{background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.25);border-radius:5px;padding:10px 14px;font-size:13px;color:#ff8888;margin-bottom:14px;display:none}
+.auth-err.on{display:block}
+.auth-fine{font-family:var(--font-m);font-size:9px;color:var(--gray);text-align:center;letter-spacing:.04em;line-height:1.6}
+
+@keyframes fade-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:900px){
+  .feat-grid,.pricing-grid,.testimonials{grid-template-columns:1fr 1fr}
+  .profile-showcase{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .feat-grid,.pricing-grid,.testimonials{grid-template-columns:1fr}
+  #navbar{padding:0 20px}
+  .nb-links{display:none}
+  .section{padding:70px 20px}
+}
+</style>
+</head>
+<body class="grid-bg">
+
+<!-- CURSOR -->
+<div id="cursor"><div class="cur-dot" id="curDot"></div></div>
+
+<!-- SMOKE CANVAS -->
+<canvas id="smokeCanvas"></canvas>
+
+<!-- ── NAVBAR ── -->
+<nav id="navbar">
+  <a class="nb-logo" href="#">
+    <img src="zodi-logo.png" alt="ZODI">
+  </a>
+  <div class="nb-links">
+    <button class="nb-link" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Funciones</button>
+    <button class="nb-link" onclick="document.getElementById('frankness').scrollIntoView({behavior:'smooth'})">Franqueza</button>
+    <button class="nb-link" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Precios</button>
+  </div>
+  <button class="nb-cta" onclick="openAuth('login')">Entrar →</button>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <!-- VIDEO BG -->
+  <div id="heroBg" style="position:absolute;inset:0;overflow:hidden;z-index:0">
+    <video id="heroVideo" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;opacity:0.22;transform:scale(1.08);transition:transform .1s linear" src="bg-video.mp4"></video>
+    <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(7,7,15,.55) 0%,rgba(7,7,15,.3) 40%,rgba(7,7,15,.85) 100%)"></div>
+  </div>
+  <div class="hero-orb hero-orb1"></div>
+  <div class="hero-orb hero-orb2"></div>
+  <div class="hero-orb hero-orb3"></div>
+
+  <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center">
+  <div class="hero-badge">
+    <div class="hero-badge-dot"></div>
+    <span class="hero-badge-txt">Nueva versión · 2026 · Street &amp; Mystic</span>
+  </div>
+
+  <img src="zodi-logo.png" alt="ZODI" class="hero-logo-img">
+
+  <h1 class="hero-h1">
+    La astrología<br>
+    <b>que te mereces.</b>
+    <span class="line2">Sin filtros.</span>
+  </h1>
+  <p class="hero-sub">Más directa que tu madre cuando está enfadada. Tu horóscopo de calle, con personalidad, sin humos, sin cristales de 40€.</p>
+
+  <div class="hero-cta-row">
+    <button class="btn-acid-lg" onclick="openAuth('register')">Empezar gratis →</button>
+    <button class="btn-outline-lg" onclick="openAuth('login')">Ya tengo cuenta</button>
+  </div>
+
+  <div class="hero-scroll-hint">
+    <div class="scroll-line"></div>
+  </div>
+  </div><!-- /z-index wrapper -->
+</section>
+
+<!-- ── SIGNS MARQUEE ── -->
+<div id="signs-strip">
+  <div class="marquee-track" id="marqueeTrack"></div>
+</div>
+
+<!-- ── FEATURES ── -->
+<section id="features">
+  <div class="section">
+    <div class="section-label reveal">Lo que hace ZODI</div>
+    <h2 class="section-h2 reveal">Astrología de <b>verdad</b>,<br>sin el rollo.</h2>
+    <div class="feat-grid">
+      <div class="feat-card acid reveal" style="transition-delay:.1s">
+        <div class="feat-icon acid">⚡</div>
+        <div class="feat-title">Perfil completo</div>
+        <div class="feat-desc">Signo solar, animal chino, numerología de vida, significado de tu nombre. Todo en un solo lugar, con actitud.</div>
+        <span class="feat-badge">Nuevo</span>
+      </div>
+      <div class="feat-card purple reveal" style="transition-delay:.2s">
+        <div class="feat-icon purple">🔥</div>
+        <div class="feat-title">Frankness Levels</div>
+        <div class="feat-desc">Elige cuánto te quieres enterar. Suave, normal o fuerte. Tú mandas, el universo obedece.</div>
+      </div>
+      <div class="feat-card red reveal" style="transition-delay:.3s">
+        <div class="feat-icon red">💀</div>
+        <div class="feat-title">Horóscopo Negro</div>
+        <div class="feat-desc">Sin anestesia. Sin positividad forzada. El roast astral que nadie más se atreve a darte.</div>
+        <span class="feat-badge" style="background:rgba(255,68,68,.1);border-color:rgba(255,68,68,.25);color:#ff8888">Nivel: Brutal</span>
+      </div>
+      <div class="feat-card acid reveal" style="transition-delay:.1s">
+        <div class="feat-icon acid">🀄</div>
+        <div class="feat-title">Horóscopo Chino</div>
+        <div class="feat-desc">Tu animal, tu energía, tu año. Con vocabulario de barrio, no de manual espiritual de los 90.</div>
+      </div>
+      <div class="feat-card purple reveal" style="transition-delay:.2s">
+        <div class="feat-icon purple">💑</div>
+        <div class="feat-title">Compatibilidad</div>
+        <div class="feat-desc">¿Sois compatibles o estáis perdiendo el tiempo? ZODI te lo dice con datos y sin rodeos.</div>
+      </div>
+      <div class="feat-card red reveal" style="transition-delay:.3s">
+        <div class="feat-icon red">🔢</div>
+        <div class="feat-title">Numerología</div>
+        <div class="feat-desc">Tu número de vida, tu año personal 2026. Los números no mienten aunque a veces no queramos oírlos.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FRANKNESS DEMO ── -->
+<section id="frankness">
+  <div class="section">
+    <div class="section-label reveal">Frankness Levels</div>
+    <h2 class="section-h2 reveal">Tú eliges cuánto<br><b>te duele.</b></h2>
+    <p class="reveal" style="font-size:15px;color:var(--bone-dim);max-width:460px;line-height:1.7;margin-bottom:0">El mismo horóscopo, tres niveles de franqueza. Porque no todos estamos preparados para la verdad completa el lunes por la mañana.</p>
+    <div class="frank-demo reveal" style="transition-delay:.2s">
+      <div class="frank-tabs">
+        <div class="frank-tab on suave" onclick="setFrankTab('suave',this)">🌤 Suave</div>
+        <div class="frank-tab normal" onclick="setFrankTab('normal',this)">⚡ Normal</div>
+        <div class="frank-tab fuerte" onclick="setFrankTab('fuerte',this)">🔥 Fuerte</div>
+      </div>
+      <div class="frank-content">
+        <div class="frank-msg on" id="fm-suave">
+          <div class="frank-sign">Escorpio · Hoy</div>
+          <p class="frank-msg-text">"Tu intuición está especialmente afinada hoy. Confía en esa voz interior que te dice qué camino tomar. Las estrellas te acompañan."</p>
+          <span class="frank-level suave">🌤 Nivel suave</span>
+        </div>
+        <div class="frank-msg" id="fm-normal">
+          <div class="frank-sign">Escorpio · Hoy</div>
+          <p class="frank-msg-text">"Escorpio, hoy sabes algo que los demás no saben y tienes que decidir qué hacer con eso. La información es poder, sí, pero úsala con cabeza. No todo necesita salir a la luz hoy."</p>
+          <span class="frank-level normal">⚡ Nivel normal</span>
+        </div>
+        <div class="frank-msg" id="fm-fuerte">
+          <div class="frank-sign">Escorpio · Hoy</div>
+          <p class="frank-msg-text">"Escorpio, llevas tiempo guardando rencor por algo que ya pasó y está ocupando espacio mental que necesitas para cosas mejores. No te pido que perdones porque sé que no perdonas, te pido que sueltes el peso porque te está frenando más a ti que a ellos."</p>
+          <span class="frank-level fuerte">🔥 Nivel fuerte</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROFILE PREVIEW ── -->
+<section id="profile-preview" style="padding:100px 24px;background:linear-gradient(to bottom,transparent,rgba(108,61,200,.04),transparent)">
+  <div style="max-width:1100px;margin:0 auto">
+    <div class="section-label reveal">Tu Perfil Cósmico</div>
+    <h2 class="section-h2 reveal">Todo lo que eres,<br><b>en un solo lugar.</b></h2>
+    <div class="profile-showcase">
+      <div class="profile-card-demo reveal-left">
+        <div class="pcd-header">
+          <div class="pcd-avatar-row">
+            <div class="pcd-avatar">♏</div>
+            <div>
+              <div class="pcd-name">Sofía R.</div>
+              <div class="pcd-meta">Escorpio · 7 Nov · Madrid</div>
+            </div>
+          </div>
+          <div class="pcd-badges">
+            <div class="pcd-badge">
+              <div class="pcd-badge-em">♏</div>
+              <div class="pcd-badge-info">
+                <div class="pcd-badge-label">Signo Solar</div>
+                <div class="pcd-badge-val">Escorpio</div>
+              </div>
+            </div>
+            <div class="pcd-badge">
+              <div class="pcd-badge-em">🐍</div>
+              <div class="pcd-badge-info">
+                <div class="pcd-badge-label">Animal Chino</div>
+                <div class="pcd-badge-val">Serpiente</div>
+              </div>
+            </div>
+            <div class="pcd-badge">
+              <div class="pcd-badge-em">7️⃣</div>
+              <div class="pcd-badge-info">
+                <div class="pcd-badge-label">Nº de Vida</div>
+                <div class="pcd-badge-val">7 · Buscador</div>
+              </div>
+            </div>
+            <div class="pcd-badge">
+              <div class="pcd-badge-em">🔢</div>
+              <div class="pcd-badge-info">
+                <div class="pcd-badge-label">Año Personal</div>
+                <div class="pcd-badge-val">3 · Creatividad</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pcd-body">
+          <div class="pcd-name-meaning">
+            <div class="pcd-nm-label">✦ Significado del nombre · Sofía</div>
+            <div class="pcd-nm-text">"Sabiduría. Las Sofías saben más de lo que aparentan. No te fíes si las ves calladas."</div>
+          </div>
+        </div>
+      </div>
+      <div class="profile-text-side reveal-right">
+        <p style="font-size:16px;color:var(--bone-dim);line-height:1.75">Tu perfil ZODI no es una ficha de datos. Es tu identidad cósmica, con actitud callejera y sin florituras.</p>
+        <ul class="profile-feat-list">
+          <li class="pfl-item"><div class="pfl-dot"></div><div class="pfl-text"><b>Signo solar</b> con descripción de barrio — nada de traducciones de manual</div></li>
+          <li class="pfl-item"><div class="pfl-dot"></div><div class="pfl-text"><b>Animal del horóscopo chino</b> con su personalidad callejera real</div></li>
+          <li class="pfl-item"><div class="pfl-dot"></div><div class="pfl-text"><b>Numerología</b> de vida y año personal 2026, sin adornos</div></li>
+          <li class="pfl-item"><div class="pfl-dot"></div><div class="pfl-text"><b>Significado de tu nombre</b> con la energía que lleva y lo que dice de ti</div></li>
+          <li class="pfl-item"><div class="pfl-dot"></div><div class="pfl-text"><b>Botón de cerrar sesión</b> siempre visible — tu privacidad, tu control</div></li>
+        </ul>
+        <button class="btn-acid-lg" style="margin-top:28px" onclick="openAuth('register')">Crear mi perfil gratis →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRICING ── -->
+<section id="pricing">
+  <div class="section">
+    <div class="section-label reveal">Planes</div>
+    <h2 class="section-h2 reveal">Elige tu nivel<br><b>de verdad.</b></h2>
+    <p class="reveal" style="font-size:14px;color:var(--gray);font-family:var(--font-m);letter-spacing:.04em;margin-bottom:0">Precios en euros · Sin permanencia · Cancela cuando quieras</p>
+    <div class="pricing-grid">
+      <!-- FREE -->
+      <div class="plan-card reveal" style="transition-delay:.1s">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">
+          <span class="plan-price-curr">€</span>
+          <span class="plan-price-num">0</span>
+          <span class="plan-price-per">/mes</span>
+        </div>
+        <div class="plan-period">Para siempre gratis</div>
+        <ul class="plan-features">
+          <li class="plan-feat"><span class="plan-feat-check">✓</span>Horóscopo diario (nivel Normal)</li>
+          <li class="plan-feat"><span class="plan-feat-check">✓</span>Perfil con signo + animal chino</li>
+          <li class="plan-feat"><span class="plan-feat-check">✓</span>Numerología de vida</li>
+          <li class="plan-feat"><span class="plan-feat-check">✓</span>Compatibilidad básica</li>
+          <li class="plan-feat"><span class="plan-feat-check off">✗</span><span style="opacity:.5">Frankness levels (solo Normal)</span></li>
+          <li class="plan-feat"><span class="plan-feat-check off">✗</span><span style="opacity:.5">Horóscopo Negro / Roast</span></li>
+          <li class="plan-feat"><span class="plan-feat-check off">✗</span><span style="opacity:.5">Carta astral completa</span></li>
+        </ul>
+        <button class="plan-cta outline" onclick="openAuth('register')">Empezar gratis</button>
+      </div>
+
+      <!-- PREMIUM -->
+      <div class="plan-card featured reveal" style="transition-delay:.2s">
+        <div class="plan-popular">Más popular</div>
+        <div class="plan-name">Premium</div>
+        <div class="plan-price">
+          <span class="plan-price-curr">€</span>
+          <span class="plan-price-num">4<span style="font-size:.55em">,99</span></span>
+          <span class="plan-price-per">/mes</span>
+        </div>
+        <div class="plan-period">O €47,99/año — ahorra 20%</div>
+        <ul class="plan-features">
+          <li class="plan-feat"><span class="plan-feat-check">✓</span>Todo lo del plan Free</li>
+          <li class="plan-feat"><span class="plan-feat-check">✓</span><b>Frankness Levels: Suave, Normal y Fuerte</b></li>
+          <li class="plan-feat"><span class="plan-feat-check">✓</span>Horóscopo Negro / Roast semanal</li>
+          <li class="plan-feat"><span class="plan-feat-check">✓</span>Horóscopo semanal y mensual</li>
+          <li class="plan-feat"><span class="plan-feat-check">✓</span>Significado de nombre completo</li>
+          <li class="plan-feat"><span class="plan-feat-check">✓</span>Modo Cotilla (espía signos)</li>
+          <li class="plan-feat"><span class="plan-feat-check off">✗</span><span style="opacity:.5">Carta astral completa</span></li>
+        </ul>
+        <button class="plan-cta acid" onclick="openAuth('register')">Probar Premium →</button>
+        <div class="plan-save">7 días gratis · Sin tarjeta</div>
+      </div>
+
+      <!-- PRO -->
+      <div class="plan-card reveal" style="transition-delay:.3s">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">
+          <span class="plan-price-curr">€</span>
+          <span class="plan-price-num">9<span style="font-size:.55em">,99</span></span>
+          <span class="plan-price-per">/mes</span>
+        </div>
+        <div class="plan-period">O €95,99/año — ahorra 20%</div>
+        <ul class="plan-features">
+          <li class="plan-feat"><span class="plan-feat-check">✓</span>Todo lo del plan Premium</li>
+          <li class="plan-feat"><span class="plan-feat-check">✓</span><b>Carta astral completa personalizada</b></li>
+          <li class="plan-feat"><span class="plan-feat-check">✓</span>Tránsitos planetarios en tiempo real</li>
+          <li class="plan-feat"><span class="plan-feat-check">✓</span>Compatibilidad avanzada (sinastría)</li>
+          <li class="plan-feat"><span class="plan-feat-check">✓</span>Horóscopo chino profundo</li>
+          <li class="plan-feat"><span class="plan-feat-check">✓</span>Numerología completa + nombre + apellidos</li>
+          <li class="plan-feat"><span class="plan-feat-check">✓</span>Sin anuncios, sin límites</li>
+        </ul>
+        <button class="plan-cta outline" onclick="openAuth('register')">Probar Pro →</button>
+        <div class="plan-save" style="color:var(--purple-light)">7 días gratis · Sin tarjeta</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ── -->
+<section id="social">
+  <div class="section">
+    <div class="section-label reveal">Lo que dicen</div>
+    <h2 class="section-h2 reveal">La gente habla.<br><b>Y no para.</b></h2>
+    <div class="testimonials">
+      <div class="testi reveal" style="transition-delay:.1s">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"Por fin un horóscopo que no me trata como idiota. El nivel fuerte me dejó en shock pero tenía razón en todo."</div>
+        <div class="testi-author"><div class="testi-avatar" style="background:rgba(170,255,0,.1)">♌</div><div><div class="testi-name">ANDREA M.</div><div class="testi-sign">Leo · Madrid</div></div></div>
+      </div>
+      <div class="testi reveal" style="transition-delay:.2s">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"El perfil con el animal chino y la numerología me flipó. Y el significado de mi nombre... demasiado real para ser casualidad."</div>
+        <div class="testi-author"><div class="testi-avatar" style="background:rgba(108,61,200,.15)">♏</div><div><div class="testi-name">CARLOS V.</div><div class="testi-sign">Escorpio · Barcelona</div></div></div>
+      </div>
+      <div class="testi reveal" style="transition-delay:.3s">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"El horóscopo negro de Virgo me describió tan bien que pensé que me estaban espiando. Aterrador. Genial."</div>
+        <div class="testi-author"><div class="testi-avatar" style="background:rgba(136,187,136,.1)">♍</div><div><div class="testi-name">PAULA G.</div><div class="testi-sign">Virgo · Valencia</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FINAL CTA ── -->
+<section id="cta-final">
+  <div class="cta-orb cta-orb1"></div>
+  <div style="position:relative;z-index:2">
+    <div class="section-label reveal" style="justify-content:center;margin-bottom:18px">El universo no espera</div>
+    <h2 class="cta-h2 reveal">Descubre lo que<br><b>las estrellas saben</b><br>de ti.</h2>
+    <p class="cta-sub reveal">Gratis para empezar. Sin tarjeta. Sin excusas.</p>
+    <div class="cta-cta-row reveal">
+      <button class="btn-acid-lg" onclick="openAuth('register')">Empezar ahora — es gratis →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">
+    <img src="zodi-logo.png" alt="ZODI">
+    <span class="footer-txt">ZODI © 2026 · La astrología que te mereces</span>
+  </div>
+  <div class="footer-txt">No somos terapia. Pero vamos al grano más que tu terapeuta.</div>
+</footer>
+
+<!-- ── AUTH MODAL ── -->
+<div class="modal-overlay" id="authOverlay">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()">×</button>
+    <img src="zodi-logo.png" alt="ZODI" class="auth-logo">
+    <h2 class="auth-h">Bienvenido/a</h2>
+    <p class="auth-sub">Entra en ZODI y descubre lo que el universo lleva tiempo intentando decirte.</p>
+    <div class="auth-tabs">
+      <button class="auth-tab on" id="atLogin" onclick="switchAuthTab('login')">Entrar</button>
+      <button class="auth-tab" id="atRegister" onclick="switchAuthTab('register')">Crear cuenta</button>
+    </div>
+    <div class="auth-err" id="authErr"></div>
+
+    <!-- LOGIN -->
+    <div id="authLogin">
+      <div class="fgroup"><label class="flabel">Email</label><input class="finput" type="email" id="lEmail" placeholder="tu@email.com" autocomplete="email"></div>
+      <div class="fgroup"><label class="flabel">Contraseña</label><input class="finput" type="password" id="lPass" placeholder="••••••••" autocomplete="current-password"></div>
+      <label class="auth-remember"><input type="checkbox" id="lRemember" checked> Mantener sesión iniciada</label>
+      <button class="auth-btn" id="loginBtn" onclick="doLogin()">Entrar a ZODI →</button>
+      <div class="auth-fine">Al entrar aceptas los términos de uso · ZODI no vende tus datos a nadie</div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="authRegister" style="display:none">
+      <div class="fgroup"><label class="flabel">Nombre</label><input class="finput" type="text" id="rName" placeholder="Tu nombre" autocomplete="name"></div>
+      <div class="fgroup"><label class="flabel">Email</label><input class="finput" type="email" id="rEmail" placeholder="tu@email.com" autocomplete="email"></div>
+      <div class="fgroup"><label class="flabel">Contraseña</label><input class="finput" type="password" id="rPass" placeholder="Mínimo 6 caracteres" autocomplete="new-password"></div>
+      <button class="auth-btn" id="registerBtn" onclick="doRegister()">Crear mi cuenta →</button>
+      <div class="auth-fine">Gratis para siempre · Sin tarjeta · Cancela cuando quieras</div>
+    </div>
+  </div>
+</div>
+
+<script src="zodi-auth.js?v=3"></script>
+<script>
+// ── INIT ──
+(async () => {
+  await ZodiAuth.init();
+  if (ZodiAuth.currentUser) {
+    window.location.href = 'app.html';
+  }
+})();
+
+// ── NAVBAR SCROLL ──
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// ── CUSTOM CURSOR (dot only) ──
+const dot = document.getElementById('curDot');
+let mx=0, my=0;
+document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
+
+// ── PURE SMOKE EFFECT ──
+const cv = document.getElementById('smokeCanvas');
+const ctx2 = cv.getContext('2d');
+let W,H; const particles=[];
+function resizeSmoke(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight}
+resizeSmoke(); window.addEventListener('resize',resizeSmoke);
+
+class SmokeParticle{
+  constructor(x,y){
+    this.x=x; this.y=y;
+    this.vx=(Math.random()-.5)*0.9;
+    this.vy=-(Math.random()*1.1+0.3);
+    this.life=1;
+    this.decay=Math.random()*.014+.006;
+    this.r=Math.random()*30+14;
+    this.rotation=Math.random()*Math.PI*2;
+    this.rotSpeed=(Math.random()-.5)*.02;
+    // smoke color: white/gray wisps
+    const b=Math.floor(Math.random()*60+180);
+    this.color=`${b},${b},${b}`;
+  }
+  update(){
+    this.x+=this.vx; this.y+=this.vy;
+    this.vx*=.97; this.vy*=.97;
+    this.life-=this.decay; this.r*=1.018;
+    this.rotation+=this.rotSpeed;
+  }
+  draw(){
+    ctx2.save();
+    ctx2.globalAlpha=this.life*0.18;
+    ctx2.translate(this.x,this.y);
+    ctx2.rotate(this.rotation);
+    const g=ctx2.createRadialGradient(0,0,0,0,0,this.r);
+    g.addColorStop(0,`rgba(${this.color},0.5)`);
+    g.addColorStop(0.4,`rgba(${this.color},0.2)`);
+    g.addColorStop(1,`rgba(${this.color},0)`);
+    ctx2.fillStyle=g;
+    ctx2.beginPath();
+    ctx2.ellipse(0,0,this.r,this.r*0.7,0,0,Math.PI*2);
+    ctx2.fill();
+    ctx2.restore();
+  }
+}
+
+let lastX=0,lastY=0;
+document.addEventListener('mousemove',e=>{
+  const dx=e.clientX-lastX, dy=e.clientY-lastY;
+  const speed=Math.sqrt(dx*dx+dy*dy);
+  lastX=e.clientX; lastY=e.clientY;
+  const count=Math.min(Math.floor(speed*0.3)+1,4);
+  for(let i=0;i<count;i++) particles.push(new SmokeParticle(e.clientX+(Math.random()-0.5)*8, e.clientY+(Math.random()-0.5)*8));
+});
+function animSmoke(){
+  ctx2.clearRect(0,0,W,H);
+  for(let i=particles.length-1;i>=0;i--){
+    particles[i].update(); particles[i].draw();
+    if(particles[i].life<=0) particles.splice(i,1);
+  }
+  requestAnimationFrame(animSmoke);
+}
+animSmoke();
+
+// ── VIDEO PARALLAX ──
+const heroVideo = document.getElementById('heroVideo');
+window.addEventListener('scroll', ()=>{
+  const scrolled = window.scrollY;
+  const maxScroll = window.innerHeight;
+  const progress = Math.min(scrolled/maxScroll, 1);
+  if(heroVideo) {
+    heroVideo.style.transform = `scale(1.08) translateY(${progress*40}px)`;
+    heroVideo.style.opacity = (0.22 - progress*0.15).toString();
+  }
+}, {passive:true});
+
+// ── MARQUEE ──
+const { SIGNS } = window.ZODI_DATA || {};
+(function buildMarquee(){
+  const signs = window.ZODI_DATA?.SIGNS || [];
+  const track = document.getElementById('marqueeTrack');
+  const items = [...signs,...signs].map(s=>`<div class="sign-chip"><span class="sign-chip-em">${s.em}</span><span class="sign-chip-name">${s.name}</span></div>`).join('');
+  track.innerHTML = items + items; // double for seamless loop
+})();
+
+// ── FRANKNESS TABS ──
+function setFrankTab(mode, el){
+  document.querySelectorAll('.frank-tab').forEach(t=>t.classList.remove('on','suave','normal','fuerte'));
+  document.querySelectorAll('.frank-msg').forEach(m=>m.classList.remove('on'));
+  el.classList.add('on', mode);
+  document.getElementById('fm-'+mode).classList.add('on');
+}
+
+// ── REVEAL ON SCROLL ──
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.12});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el=>observer.observe(el));
+
+// ── AUTH MODAL ──
+function openAuth(tab='login'){
+  document.getElementById('authOverlay').classList.add('on');
+  switchAuthTab(tab);
+  document.getElementById('authErr').classList.remove('on');
+}
+function closeAuth(){document.getElementById('authOverlay').classList.remove('on')}
+document.getElementById('authOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('authOverlay'))closeAuth()});
+function switchAuthTab(tab){
+  document.getElementById('atLogin').classList.toggle('on',tab==='login');
+  document.getElementById('atRegister').classList.toggle('on',tab==='register');
+  document.getElementById('authLogin').style.display=tab==='login'?'block':'none';
+  document.getElementById('authRegister').style.display=tab==='register'?'block':'none';
+  document.getElementById('authErr').classList.remove('on');
+}
+function showAuthErr(msg){const e=document.getElementById('authErr');e.textContent=msg;e.classList.add('on')}
+async function doLogin(){
+  const btn=document.getElementById('loginBtn');
+  btn.disabled=true; btn.textContent='Entrando...';
+  try{
+    await ZodiAuth.login(document.getElementById('lEmail').value, document.getElementById('lPass').value, document.getElementById('lRemember').checked);
+    window.location.href='app.html';
+  }catch(err){showAuthErr(err.message);btn.disabled=false;btn.textContent='Entrar a ZODI →'}
+}
+async function doRegister(){
+  const btn=document.getElementById('registerBtn');
+  const name=document.getElementById('rName').value.trim();
+  const email=document.getElementById('rEmail').value.trim();
+  const pass=document.getElementById('rPass').value;
+  if(!name){showAuthErr('Dime cómo te llaman, venga.');return}
+  if(!email||!email.includes('@')){showAuthErr('Ese email no pinta bien.');return}
+  if(pass.length<6){showAuthErr('La contraseña tiene que tener al menos 6 caracteres.');return}
+  btn.disabled=true; btn.textContent='Creando cuenta...';
+  try{
+    await ZodiAuth.register(email,pass,name);
+    window.location.href='app.html';
+  }catch(err){showAuthErr(err.message);btn.disabled=false;btn.textContent='Crear mi cuenta →'}
+}
+// Enter key support
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeAuth();
+  if(e.key==='Enter'&&document.getElementById('authOverlay').classList.contains('on')){
+    const loginVisible=document.getElementById('authLogin').style.display!=='none';
+    if(loginVisible)doLogin(); else doRegister();
+  }
+});
+</script>
+<script src="zodi-data.js?v=3"></script>
+</body>
+</html>

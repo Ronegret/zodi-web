@@ -1,0 +1,211 @@
+// ═══════════════════════════════════════════════
+// ZODI DATA — Zodiac, Chinese, Numerology, Names
+// ═══════════════════════════════════════════════
+(function(){
+if (window.ZODI_DATA) return;
+const SIGNS = [
+  { id:'aries',      em:'♈', name:'Aries',       dates:'21 mar – 19 abr', el:'Fuego', planet:'Marte',     color:'#FF4444', desc:'El que llega sin avisar y lo peta todo.' },
+  { id:'tauro',      em:'♉', name:'Tauro',       dates:'20 abr – 20 may', el:'Tierra',planet:'Venus',     color:'#88CC44', desc:'Cabezota de lujo con gusto de cinco estrellas.' },
+  { id:'geminis',    em:'♊', name:'Géminis',     dates:'21 may – 20 jun', el:'Aire',  planet:'Mercurio',  color:'#FFDD44', desc:'Dos personalidades por el precio de una.' },
+  { id:'cancer',     em:'♋', name:'Cáncer',      dates:'21 jun – 22 jul', el:'Agua',  planet:'Luna',      color:'#88BBFF', desc:'Siente todo x10. Corazón de oro, caparazón de acero.' },
+  { id:'leo',        em:'♌', name:'Leo',         dates:'23 jul – 22 ago', el:'Fuego', planet:'Sol',       color:'#FFAA00', desc:'El protagonista nato. El universo gira en torno a él/ella.' },
+  { id:'virgo',      em:'♍', name:'Virgo',       dates:'23 ago – 22 sep', el:'Tierra',planet:'Mercurio',  color:'#AABB88', desc:'Lo tiene todo bajo control. O eso intenta.' },
+  { id:'libra',      em:'♎', name:'Libra',       dates:'23 sep – 22 oct', el:'Aire',  planet:'Venus',     color:'#FFAACC', desc:'Quiere paz pero siempre mete lío sin querer.' },
+  { id:'escorpio',   em:'♏', name:'Escorpio',    dates:'23 oct – 21 nov', el:'Agua',  planet:'Plutón',    color:'#AA44CC', desc:'Sabe cosas que mejor no saber que sabe.' },
+  { id:'sagitario',  em:'♐', name:'Sagitario',   dates:'22 nov – 21 dic', el:'Fuego', planet:'Júpiter',   color:'#FF8844', desc:'Libre como el viento. Compromiso: desconocido.' },
+  { id:'capricornio',em:'♑', name:'Capricornio', dates:'22 dic – 19 ene', el:'Tierra',planet:'Saturno',   color:'#8899AA', desc:'Nació siendo adulto y trabajando el doble que todos.' },
+  { id:'acuario',    em:'♒', name:'Acuario',     dates:'20 ene – 18 feb', el:'Aire',  planet:'Urano',     color:'#44CCFF', desc:'Raro, único, adelantado a su tiempo. Él lo sabe.' },
+  { id:'piscis',     em:'♓', name:'Piscis',      dates:'19 feb – 20 mar', el:'Agua',  planet:'Neptuno',   color:'#8888FF', desc:'Vive en otro plano. Artista del alma o del caos.' },
+];
+
+const CHINESE_ZODIAC = [
+  { id:'rata',   em:'🐭', name:'Rata',    years:[1924,1936,1948,1960,1972,1984,1996,2008,2020], traits:'Inteligente, adaptable, calculador', street:'La Rata no llega tarde, llega cuando conviene. Siempre con un plan B.' },
+  { id:'buey',   em:'🐂', name:'Buey',    years:[1925,1937,1949,1961,1973,1985,1997,2009,2021], traits:'Paciente, determinado, confiable',    street:'El Buey no habla mucho pero cuando actúa, la lía parda. Trabajo duro, resultados reales.' },
+  { id:'tigre',  em:'🐯', name:'Tigre',   years:[1926,1938,1950,1962,1974,1986,1998,2010,2022], traits:'Valiente, carismático, impulsivo',    street:'El Tigre entra por la puerta y todo el mundo se gira. Energía pura en la calle.' },
+  { id:'conejo', em:'🐰', name:'Conejo',  years:[1927,1939,1951,1963,1975,1987,1999,2011,2023], traits:'Amable, elegante, precavido',         street:'El Conejo sonríe pero tiene todo calculado. Suavidad con agenda.' },
+  { id:'dragon', em:'🐉', name:'Dragón',  years:[1928,1940,1952,1964,1976,1988,2000,2012,2024], traits:'Poderoso, perfeccionista, carismático',street:'El Dragón es el show completo. Nació para liderar aunque no lo busque.' },
+  { id:'serpiente',em:'🐍',name:'Serpiente',years:[1929,1941,1953,1965,1977,1989,2001,2013,2025],traits:'Sabia, intuitiva, misteriosa',        street:'La Serpiente sabe antes que pase. Intuición callejera al máximo nivel.' },
+  { id:'caballo',em:'🐴', name:'Caballo', years:[1930,1942,1954,1966,1978,1990,2002,2014,2026], traits:'Libre, energético, apasionado',       street:'El Caballo no para, no descansa, no se queda. Alma libre y punto.' },
+  { id:'cabra',  em:'🐐', name:'Cabra',   years:[1931,1943,1955,1967,1979,1991,2003,2015],      traits:'Creativa, amable, artística',         street:'La Cabra crea mundos donde los demás ven paredes. Artista de la vida real.' },
+  { id:'mono',   em:'🐒', name:'Mono',    years:[1932,1944,1956,1968,1980,1992,2004,2016],      traits:'Listo, versátil, travieso',           street:'El Mono resuelve cualquier movida antes de que empiece. Siempre un paso adelante.' },
+  { id:'gallo',  em:'🐓', name:'Gallo',   years:[1933,1945,1957,1969,1981,1993,2005,2017],      traits:'Puntual, trabajador, orgulloso',      street:'El Gallo dice lo que hay sin rodeos. No finge, no calla, no miente.' },
+  { id:'perro',  em:'🐕', name:'Perro',   years:[1934,1946,1958,1970,1982,1994,2006,2018],      traits:'Leal, honesto, valiente',             street:'El Perro no te abandona. Lealtad de barrio, de las de verdad.' },
+  { id:'cerdo',  em:'🐷', name:'Cerdo',   years:[1935,1947,1959,1971,1983,1995,2007,2019],      traits:'Generoso, sincero, compasivo',        street:'El Cerdo da sin pedir nada. Corazón enorme, vida generosa.' },
+];
+
+const NAME_MEANINGS = {
+  // Spanish common names
+  'ana':      { origin:'Hebreo', meaning:'Gracia, favor de Dios', energy:'Suave pero con nervio. Las Anas parecen tranquilas pero se las ve venir.' },
+  'maria':    { origin:'Hebreo/Arameo', meaning:'La amada, la elegida', energy:'Nombre con peso histórico. Las Marías cargaron con todo y siguen en pie.' },
+  'carlos':   { origin:'Germánico', meaning:'Hombre libre y valiente', energy:'Nombre de líder que no pide permiso. Autogestión total.' },
+  'jose':     { origin:'Hebreo', meaning:'El que Dios añadirá, el bendecido', energy:'Nombre trabajador. Los Josés construyen su camino piedra a piedra.' },
+  'sofia':    { origin:'Griego', meaning:'Sabiduría', energy:'Las Sofías saben más de lo que aparentan. No te fíes si las ves calladas.' },
+  'laura':    { origin:'Latino', meaning:'La coronada con laureles, la victoriosa', energy:'Nombre de ganadora aunque ella no lo sepa todavía.' },
+  'alejandro':{ origin:'Griego', meaning:'Defensor de hombres, el protector', energy:'Los Alejandros protegen su territorio. No se meten donde no les llaman pero si les llamas, llegan.' },
+  'david':    { origin:'Hebreo', meaning:'El amado', energy:'David el tranquilo que cuando se enfada... se enfada de verdad.' },
+  'paula':    { origin:'Latino', meaning:'La pequeña, la humilde', energy:'Las Paulas compensan el nombre pequeño con personalidad enorme.' },
+  'daniel':   { origin:'Hebreo', meaning:'Dios es mi juez', energy:'Los Danieles van a su bola y si no te gusta, Dios juzgará. Independientes natos.' },
+  'elena':    { origin:'Griego', meaning:'La que brilla como el sol', energy:'Las Elenas iluminan la sala sin intentarlo. Luz natural, no artificial.' },
+  'miguel':   { origin:'Hebreo', meaning:'¿Quién como Dios?', energy:'Los Migueles cuestionan todo. Nunca dan nada por hecho.' },
+  'lucia':    { origin:'Latino', meaning:'La que trae la luz', energy:'Las Lucías ven en la oscuridad. Intuición fuera de serie.' },
+  'antonio':  { origin:'Latino', meaning:'El que florece', energy:'Los Antonios echan raíces donde están. Aguantan lo que no aguanta nadie.' },
+  'sara':     { origin:'Hebreo', meaning:'Princesa, la noble', energy:'Las Saras tienen porte natural. No necesitan corona para mandar.' },
+  'pablo':    { origin:'Latino', meaning:'El pequeño, el humilde', energy:'Los Pablos son los que más piensan antes de hablar. Y cuando hablan, vale la pena.' },
+  'claudia':  { origin:'Latino', meaning:'La que camina con paso firme', energy:'Las Claudias van a lo suyo. Sin prisa pero sin pausa.' },
+  'jorge':    { origin:'Griego', meaning:'El que trabaja la tierra, el guerrero', energy:'Los Jorges no necesitan aplausos. Hacen el trabajo y punto.' },
+  'isabel':   { origin:'Hebreo', meaning:'Mi Dios es abundancia', energy:'Las Isabeles tienen un imán especial para atraer cosas buenas. Suerte codificada.' },
+  'victor':   { origin:'Latino', meaning:'El victorioso, el triunfador', energy:'Los Víctores nacen con mentalidad ganadora. Incluso cuando pierden, aprenden.' },
+  'andrea':   { origin:'Griego', meaning:'Valiente, masculino/femenino', energy:'Las Andreas no aceptan límites de género ni de nada. Rompen moldes.' },
+  'pedro':    { origin:'Griego', meaning:'Roca, piedra firme', energy:'Los Pedros son los que están cuando nadie más está. Sólidos como su nombre.' },
+  'marta':    { origin:'Arameo', meaning:'La señora, la dueña', energy:'Las Martas mandan aunque no lo pretendan. Autoridad natural.' },
+  'default':  { origin:'Universal', meaning:'Un nombre único como tú', energy:'Tu nombre lleva tu energía particular. Nadie más lo lleva como tú.' },
+};
+
+function getNameMeaning(name) {
+  const key = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').split(' ')[0];
+  return NAME_MEANINGS[key] || { ...NAME_MEANINGS['default'], meaning: `Nombre con fuerza propia` };
+}
+
+function getSignFromDate(dateStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  const m = d.getMonth() + 1;
+  const day = d.getDate();
+  if ((m===3&&day>=21)||(m===4&&day<=19)) return SIGNS[0];
+  if ((m===4&&day>=20)||(m===5&&day<=20)) return SIGNS[1];
+  if ((m===5&&day>=21)||(m===6&&day<=20)) return SIGNS[2];
+  if ((m===6&&day>=21)||(m===7&&day<=22)) return SIGNS[3];
+  if ((m===7&&day>=23)||(m===8&&day<=22)) return SIGNS[4];
+  if ((m===8&&day>=23)||(m===9&&day<=22)) return SIGNS[5];
+  if ((m===9&&day>=23)||(m===10&&day<=22)) return SIGNS[6];
+  if ((m===10&&day>=23)||(m===11&&day<=21)) return SIGNS[7];
+  if ((m===11&&day>=22)||(m===12&&day<=21)) return SIGNS[8];
+  if ((m===12&&day>=22)||(m===1&&day<=19)) return SIGNS[9];
+  if ((m===1&&day>=20)||(m===2&&day<=18)) return SIGNS[10];
+  return SIGNS[11];
+}
+
+function getChineseZodiac(dateStr) {
+  if (!dateStr) return null;
+  const year = new Date(dateStr).getFullYear();
+  for (const z of CHINESE_ZODIAC) {
+    if (z.years.includes(year)) return z;
+  }
+  // fallback: cycle
+  const cycle = ((year - 1900) % 12 + 12) % 12;
+  return CHINESE_ZODIAC[cycle];
+}
+
+function calcNumerology(dateStr) {
+  if (!dateStr) return { life: 0, year: 0 };
+  const d = new Date(dateStr);
+  const digits = (d.getDate().toString() + (d.getMonth()+1).toString() + d.getFullYear().toString()).split('').map(Number);
+  let sum = digits.reduce((a,b)=>a+b,0);
+  while (sum > 9 && sum !== 11 && sum !== 22 && sum !== 33) {
+    sum = sum.toString().split('').map(Number).reduce((a,b)=>a+b,0);
+  }
+  const now = new Date();
+  const yearDigits = (d.getDate().toString() + (d.getMonth()+1).toString() + now.getFullYear().toString()).split('').map(Number);
+  let yearSum = yearDigits.reduce((a,b)=>a+b,0);
+  while (yearSum > 9 && yearSum !== 11 && yearSum !== 22) {
+    yearSum = yearSum.toString().split('').map(Number).reduce((a,b)=>a+b,0);
+  }
+  return { life: sum, year: yearSum };
+}
+
+const NUMEROLOGY_MEANINGS = {
+  1:  { title:'El Líder', street:'El 1 no pide permiso para nada. Va de frente, sin rodeos, sin esperar que nadie le abra la puerta.', keywords:['Independencia','Ambición','Coraje'] },
+  2:  { title:'El Diplomático', street:'El 2 entiende a la gente antes de que abra la boca. Mediador nato. Sabe que la fuerza real está en las conexiones.', keywords:['Intuición','Cooperación','Sensibilidad'] },
+  3:  { title:'El Creativo', street:'El 3 convierte el caos en arte. Expresa lo que los demás sienten pero no pueden decir.', keywords:['Creatividad','Expresión','Alegría'] },
+  4:  { title:'El Constructor', street:'El 4 no falla. Construye sobre roca, no sobre arena. Si lo dice, lo cumple.', keywords:['Disciplina','Trabajo','Fiabilidad'] },
+  5:  { title:'El Libre', street:'El 5 no acepta jaulas de ningún tipo. Cambio, aventura, libertad total. Los 5 viven más en una semana que otros en un año.', keywords:['Libertad','Aventura','Adaptabilidad'] },
+  6:  { title:'El Protector', street:'El 6 cuida de los suyos sin que nadie se lo pida. Familia, comunidad, amor incondicional. El barrio lo necesita.', keywords:['Amor','Responsabilidad','Armonía'] },
+  7:  { title:'El Buscador', street:'El 7 no acepta la primera respuesta. Busca la verdad debajo de la verdad. Mente que no para nunca.', keywords:['Sabiduría','Análisis','Misterio'] },
+  8:  { title:'El Poderoso', street:'El 8 entiende el juego del dinero y el poder. No para presumir, para construir algo real y duradero.', keywords:['Éxito','Poder','Abundancia'] },
+  9:  { title:'El Compasivo', street:'El 9 ya vivió todo. Ahora da. Generosidad que no espera nada a cambio. El viejo sabio de la pandilla.', keywords:['Compasión','Humanidad','Sabiduría'] },
+  11: { title:'El Iluminado', street:'Número maestro. El 11 tiene una antena especial. Conectado con algo más grande. Intuición fuera de carta.', keywords:['Intuición','Iluminación','Maestría'] },
+  22: { title:'El Maestro Constructor', street:'Número maestro del 22. Capacidad de construir cosas que cambian el mundo. Responsabilidad enorme, poder enorme.', keywords:['Maestría','Construcción','Legado'] },
+  33: { title:'El Maestro Compasivo', street:'El número más espiritual. El 33 vive para elevar a los demás. Raro y poderoso.', keywords:['Compasión','Maestría','Servicio'] },
+};
+
+const HOROSCOPE_TEXTS = {
+  suave: {
+    aries:      'Hoy es un día favorable para ti. Tus energías están alineadas y podrías recibir buenas noticias en el área profesional. Confía en tu instinto.',
+    tauro:      'Las estrellas te piden paciencia hoy. Lo que deseas llegará, pero a su debido tiempo. Disfruta del proceso.',
+    geminis:    'Tu mente está especialmente activa hoy. Es un buen momento para comunicar tus ideas y conectar con personas nuevas.',
+    cancer:     'Tus emociones están en equilibrio hoy. Es un buen día para cuidar de ti mismo y de tus relaciones más cercanas.',
+    leo:        'Tu carisma está en su punto máximo. Las oportunidades llegan a quienes se muestran tal como son. Brilla sin complejos.',
+    virgo:      'Tu capacidad organizativa es tu mayor fortaleza hoy. Aprovecha para poner orden en los proyectos que tienes pendientes.',
+    libra:      'La armonía que buscas está más cerca de lo que crees. Pequeños gestos de conciliación marcarán la diferencia hoy.',
+    escorpio:   'Tu intuición está especialmente afinada hoy. Confía en esa voz interior que te dice qué camino tomar.',
+    sagitario:  'El universo te invita a expandir tus horizontes. Una conversación casual podría abrir puertas inesperadas.',
+    capricornio:'Tu perseverancia está dando frutos. Los esfuerzos del pasado empiezan a tener recompensa. Sigue adelante.',
+    acuario:    'Tu originalidad es tu mayor activo hoy. No tengas miedo de salirte de lo convencional, tus ideas son valiosas.',
+    piscis:     'Tu sensibilidad artística está a flor de piel. Es un día perfecto para crear, soñar y conectar con tu lado más profundo.',
+  },
+  normal: {
+    aries:      'Mira, hoy tienes más energía de lo normal y eso está bien, pero no te lances sin pensar. Aries siempre corre antes de mirar y hoy el universo dice: para dos segundos. Hay una oportunidad real pero necesitas leerla bien antes de tirar.',
+    tauro:      'Tauro, llevas semanas aguantando algo que ya no tiene sentido aguantar. Hoy las estrellas te dicen lo que ya sabes: toca moverse. No todo lo que conoces es bueno para ti.',
+    geminis:    'Géminis, hoy tu cabeza va a mil. Normal en ti. Pero hay una idea entre ese caos mental que vale la pena desarrollar. El truco es elegir una sola y no empezar veinte a la vez, que ya sabemos cómo termina eso.',
+    cancer:     'Cáncer, hoy vas con los sentimientos a flor de piel, más de lo normal, y eso puede jugarte una mala pasada. No respondas en caliente. Duerme con ello primero y mañana verás las cosas mucho más claras.',
+    leo:        'Leo, hoy el mundo está girando en torno a ti y tú lo sabes. Úsalo bien. Hay alguien que lleva tiempo observándote y espera el momento de acercarse. Ábrete un poco más de lo habitual.',
+    virgo:      'Virgo, llevas demasiado tiempo buscando la perfección en algo que ya está bien como está. Hoy el universo te pide que sueltes el control un momento y confíes en el proceso. Respirar también está permitido.',
+    libra:      'Libra, llevas días entre dos opciones y sin decidirte. Hoy toca elegir porque la ventana se está cerrando. Cualquier decisión es mejor que seguir en el limbo.',
+    escorpio:   'Escorpio, hoy sabes algo que los demás no saben y tienes que decidir qué hacer con eso. La información es poder, sí, pero úsala con cabeza. No todo necesita salir a la luz hoy.',
+    sagitario:  'Sagitario, el problema no es que quieras libertad, es que huyes del compromiso incluso cuando te conviene quedarte. Hoy hay algo que merece tu atención sostenida. Inténtalo.',
+    capricornio:'Capricornio, llevas meses trabajando duro y es hora de reconocerlo. Hoy hay una señal de que algo que construiste está empezando a rendir frutos. Permítete celebrarlo aunque sea cinco minutos.',
+    acuario:    'Acuario, el mundo no siempre entiende tus ideas y ya sabes que eso no es problema tuyo. Hoy hay alguien que sí las va a entender. Habla claro y sin filtros porque has encontrado a alguien en tu frecuencia.',
+    piscis:     'Piscis, llevas demasiado tiempo dando sin recibir y hoy el universo te lo pone delante para que lo veas. No es egoísmo poner límites. Es supervivencia.',
+  },
+  fuerte: {
+    aries:      'A ver Aries, para el carro dos segundos. Llevas semanas actuando como si el universo girara solo en torno a ti y te estás perdiendo señales importantes. Hoy alguien de tu círculo necesita que bajes el ego un poco y escuches de verdad. No todo es una competición. Aunque para ti sí lo sea.',
+    tauro:      'Tauro, llevas MESES aguantando una situación que ya no te aporta nada porque el cambio te da pánico. Sí, pánico. No comodidad, pánico. Y hoy el universo se ha cansado de esperar y va a moverse por ti, te guste o no. Así que o te subes o te quedas atrás.',
+    geminis:    'Géminis, empezaste cuatro proyectos este mes, terminaste cero. Sorpresa. Hoy la clave no está en tener nuevas ideas, está en acabar algo de una puta vez. Ya sé que aburre. Pero la constancia también es un superpoder aunque tú prefieras ignorarlo.',
+    cancer:     'Cáncer, llevas semanas haciendo de emoción ajena un trabajo a tiempo completo y te estás olvidando completamente de ti. Hoy el universo te da un aviso serio: o empiezas a poner límites o el agotamiento emocional te va a freír el circuito. No es egoísmo, es mantenimiento básico.',
+    leo:        'Leo, escucha, hay una diferencia entre brillar y cegar. Últimamente estás cegando. Hoy hay alguien en tu vida que lleva tiempo intentando decirte algo importante pero no puede porque no le das espacio. Cierra la boca cinco minutos y escucha. Te lo digo con amor.',
+    virgo:      'Virgo, tu lista de "cosas perfectas para hacer perfectamente" tiene 47 puntos y has completado cero porque ninguno cumple tus estándares. Hoy el universo te manda un mensaje muy concreto: hecho imperfecto vale más que pensado perfectamente. Suelta. Ya. Ahora.',
+    libra:      'Libra, llevas tanto tiempo intentando no molestar a nadie que te has dejado de importar a ti mismo. Hoy alguien se va a molestar si dices lo que piensas. Y sabes qué, que se moleste. No puedes vivir para la aprobación de todo el mundo. Es agotador y además no funciona.',
+    escorpio:   'Escorpio, llevas tiempo guardando rencor por algo que ya pasó y está ocupando espacio mental que necesitas para cosas mejores. No te pido que perdones porque sé que no perdonas, te pido que sueltes el peso porque te está frenando más a ti que a ellos.',
+    sagitario:  'Sagitario, huyendo otra vez. Reconócelo. Cada vez que algo empieza a ponerse serio te inventas una aventura, un viaje, un proyecto nuevo. Hoy no. Hoy te quedas y afrontas lo que llevas semanas esquivando. Sé que puedes aunque no quieras.',
+    capricornio:'Capricornio, llevas tanto tiempo siendo el responsable de todo que ya ni recuerdas qué se siente al no serlo. Hoy el universo te dice algo que nadie más te dirá: no tienes que cargar con todo. Delegar no es fracasar. Es inteligencia.',
+    acuario:    'Acuario, sé que crees que estás más evolucionado que la media y en muchas cosas llevas razón. Pero últimamente esa superioridad intelectual se está convirtiendo en distancia emocional y la gente que te quiere lo está notando. Baja del pedestal un momento. También hay vida ahí abajo.',
+    piscis:     'Piscis, llevas meses dejándote llevar por los sueños de los demás y posponiendo los tuyos. Hoy el universo se planta. Tienes más talento real del que reconoces y lo estás desperdiciando en proyectos que ni siquiera son tuyos. Hora de hacer lo que sabes que tienes que hacer.',
+  }
+};
+
+const STREET_GLYPHS = {
+  aries:       `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><text x="40" y="58" font-size="52" text-anchor="middle" fill="currentColor" font-weight="900">♈</text></svg>`,
+  tauro:       `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><text x="40" y="58" font-size="52" text-anchor="middle" fill="currentColor" font-weight="900">♉</text></svg>`,
+  geminis:     `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><text x="40" y="58" font-size="52" text-anchor="middle" fill="currentColor" font-weight="900">♊</text></svg>`,
+  cancer:      `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><text x="40" y="58" font-size="52" text-anchor="middle" fill="currentColor" font-weight="900">♋</text></svg>`,
+  leo:         `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><text x="40" y="58" font-size="52" text-anchor="middle" fill="currentColor" font-weight="900">♌</text></svg>`,
+  virgo:       `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><text x="40" y="58" font-size="52" text-anchor="middle" fill="currentColor" font-weight="900">♍</text></svg>`,
+  libra:       `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><text x="40" y="58" font-size="52" text-anchor="middle" fill="currentColor" font-weight="900">♎</text></svg>`,
+  escorpio:    `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><text x="40" y="58" font-size="52" text-anchor="middle" fill="currentColor" font-weight="900">♏</text></svg>`,
+  sagitario:   `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><text x="40" y="58" font-size="52" text-anchor="middle" fill="currentColor" font-weight="900">♐</text></svg>`,
+  capricornio: `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><text x="40" y="58" font-size="52" text-anchor="middle" fill="currentColor" font-weight="900">♑</text></svg>`,
+  acuario:     `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><text x="40" y="58" font-size="52" text-anchor="middle" fill="currentColor" font-weight="900">♒</text></svg>`,
+  piscis:      `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><text x="40" y="58" font-size="52" text-anchor="middle" fill="currentColor" font-weight="900">♓</text></svg>`,
+};
+
+const ROAST_TEXTS = {
+  aries:      ['Aries, llevas toda la semana tomando decisiones impulsivas y diciéndote que es "intuición". No es intuición, es impulsividad con branding. Pero bueno, al menos fallas rápido.', 'La energía de Aries esta semana: salir corriendo sin saber a dónde. Combustible infinito, dirección cero. Impresionante en su propia manera.'],
+  tauro:      ['Tauro lleva tres semanas "pensando" en hacer algo. A esto en el resto del zodíaco se le llama procrastinar. Pero tú lo llamas ser metódico. Respeto.', 'El Tauro esta semana: se ha comprado otra cosa que no necesitaba para sentirse mejor. El mercado de lujo agradece tu estabilidad emocional.'],
+  geminis:    ['Géminis ha tenido siete opiniones diferentes sobre el mismo tema hoy. Es lunes. Son las 10am. Nadie más puede hacer eso.', 'Esta semana el Géminis ha empezado cuatro conversaciones a la vez, ha dejado tres a medias y ha culpado a todos de no entenderle. Clásico.'],
+  cancer:     ['Cáncer lleva toda la semana llorando por algo que pasó en 2019. Nadie más se acuerda. Tú tienes un archivo mental con todo catalogado por fecha y hora.', 'El Cáncer esta semana ha cuidado a todo el mundo menos a sí mismo y luego se ha preguntado por qué está agotado. El misterio del siglo.'],
+  leo:        ['Leo entró en una sala esta semana y automáticamente buscó dónde está el espejo más cercano. No es vanidad, es mantenimiento.', 'La vida de Leo esta semana: siendo el protagonista de una historia donde todos los demás son secundarios que no saben que son secundarios.'],
+  virgo:      ['Virgo ha revisado el mismo documento cuatro veces buscando un error que no existe. El documento está perfecto. Virgo no lo sabe todavía.', 'Esta semana el Virgo ha criticado a alguien mentalmente por no hacer algo como él lo haría. Son las 8am. Ya van seis personas.'],
+  libra:      ['Libra lleva tres días eligiendo entre dos opciones iguales. La parálisis del análisis en su máximo esplendor. Muy bello de ver desde fuera.', 'El Libra esta semana ha dicho que sí a tres planes que no quería hacer para no molestar a nadie. Ahora está molesto consigo mismo. Karma instantáneo.'],
+  escorpio:   ['Escorpio esta semana ha guardado rencor por algo que alguien hizo sin querer en 2018. La memoria de Escorpio es como una base de datos de agravios con índice de búsqueda rápida.', 'El Escorpio ha estado misterioso toda la semana. Nadie sabe si está planeando algo o simplemente tiene sueño. Él prefiere que no se sepa.'],
+  sagitario:  ['Sagitario ha planeado tres viajes esta semana que probablemente no hará. Pero la ilusión de la libertad es suficiente por ahora.', 'Esta semana el Sagitario ha comprometido seis cosas que no puede cumplir y lo ha llamado ser optimista. Hay niveles.'],
+  capricornio:['Capricornio ha trabajado doce horas, ha hecho una lista de pendientes para mañana y se ha ido a dormir sintiéndose que no hizo suficiente. Saturno está orgulloso y preocupado a partes iguales.', 'El Capricornio esta semana ha rechazado un plan de ocio porque tenía trabajo. El trabajo podía esperar. La vida también espera, y espera, y espera...'],
+  acuario:    ['Acuario ha explicado esta semana por qué la sociedad está equivocada en todo. Nadie le ha pedido su opinión pero Acuario la tiene y el mundo necesita saberlo.', 'El Acuario esta semana ha tenido tres ideas revolucionarias, una crisis existencial y ha llamado borrego a alguien que no estaba de acuerdo. Martes normalito.'],
+  piscis:     ['Piscis ha pasado la semana viviendo en un universo paralelo donde todo es más bonito, más artístico y más poético. El universo real ha llamado tres veces. No ha contestado.', 'El Piscis esta semana ha creído lo mejor de alguien que claramente no lo merecía y ahora está procesando la decepción. De nuevo. Es el ciclo de vida del Piscis.'],
+};
+
+window.ZODI_DATA = {
+  SIGNS, CHINESE_ZODIAC, NAME_MEANINGS, NUMEROLOGY_MEANINGS,
+  HOROSCOPE_TEXTS, ROAST_TEXTS, STREET_GLYPHS,
+  getSignFromDate, getChineseZodiac, calcNumerology, getNameMeaning
+};
+})();
