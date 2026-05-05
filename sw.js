@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zodi-pwa-v8-layout-explore-polish';
+const CACHE_NAME = 'zodi-pwa-v9-mobile-menu-contrast';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -7,8 +7,8 @@ const APP_SHELL = [
   '/zodi-logo.png',
   '/bg-video.mp4',
   '/zodi-google-bridge-v20260505.js',
-  '/zodi-production-polish-v20260505d.js',
-  '/zodi-ux-polish-v20260505d.css'
+  '/zodi-production-polish-v20260505e.js',
+  '/zodi-ux-polish-v20260505e.css'
 ];
 
 self.addEventListener('install', event => {
