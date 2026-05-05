@@ -13,7 +13,7 @@ Options -Indexes
     Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
 
-  <FilesMatch "^(index\.html|sw\.js|manifest\.webmanifest|zodi-google-bridge.*\.js|zodi-ux-polish.*\.css)$">
+  <FilesMatch "^(index\.html|sw\.js|manifest\.webmanifest|zodi-google-bridge.*\.js|zodi-production-polish.*\.js|zodi-ux-polish.*\.css)$">
     Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
     Header set Pragma "no-cache"
     Header set Expires "0"
