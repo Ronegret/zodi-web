@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zodi-pwa-v10-light-redesign';
+const CACHE_NAME = 'zodi-pwa-v11-plan-details';
 const APP_SHELL = [
   '/',
   '/index.html',

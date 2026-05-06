@@ -166,12 +166,66 @@ function polishMobileNavigation(root = document) {
   });
 }
 
+const planDetails = {
+  gratis: [
+    "30 dias de acceso completo mientras activamos pagos.",
+    "Horoscopo diario, semana y mes.",
+    "Numerologia base y significado de nombres.",
+    "Compatibilidad simple y perfil editable.",
+    "Notificaciones basicas cuando el modulo este activo."
+  ],
+  pro: [
+    "Todo lo del plan Gratis durante la prueba.",
+    "Lecturas largas y explicadas en cada resultado.",
+    "Carta natal, compatibilidades y ciclos numerologicos avanzados.",
+    "Historial de consultas y tono personalizado.",
+    "Notificaciones astrales prioritarias cuando se activen."
+  ],
+  eterno: [
+    "Pago unico futuro, sin mensualidad.",
+    "Acceso permanente a funciones premium actuales.",
+    "Nuevos modulos incluidos cuando se publiquen.",
+    "Perfil, datos y preferencias siempre editables.",
+    "Soporte prioritario para incidencias de acceso."
+  ]
+};
+
+function planKeyFromText(text) {
+  const normalized = text.toLowerCase();
+  if (normalized.includes("cosmos pro") || normalized.includes("5")) return "pro";
+  if (normalized.includes("eterno") || normalized.includes("49")) return "eterno";
+  if (normalized.includes("gratis") || normalized.includes("0")) return "gratis";
+  return "";
+}
+
+function enhancePlanDetails(root = document) {
+  const scope = root instanceof Element ? root : document;
+  scope.querySelectorAll(".z-final-plan, .z-plan-card, .z-plan-clean").forEach(card => {
+    if (card.querySelector(".z-plan-detail-list")) return;
+    const key = planKeyFromText(card.textContent || "");
+    if (!key) return;
+    const list = document.createElement("ul");
+    list.className = "z-plan-detail-list";
+    planDetails[key].forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      list.appendChild(li);
+    });
+    const note = document.createElement("p");
+    note.className = "z-plan-payment-note";
+    note.textContent = "Cobro no activo: por ahora todos los servicios se entregan gratis durante 30 dias.";
+    card.appendChild(list);
+    card.appendChild(note);
+  });
+}
+
 function runPolish(root) {
   repairTextNodes(root);
   repairAttributes(root instanceof Element ? root : document);
   normalizeImages(root instanceof Element ? root : document);
   cleanButtons(root instanceof Element ? root : document);
   polishMobileNavigation(root instanceof Element ? root : document);
+  enhancePlanDetails(root instanceof Element ? root : document);
 }
 
 const observer = new MutationObserver(records => {

@@ -18,10 +18,22 @@
 
 html,
 body {
+  max-width: 100% !important;
+  overflow-x: clip !important;
+  overscroll-behavior-x: none !important;
   background:
     radial-gradient(circle at 9% 0%, rgba(156,255,0,.16), transparent 28%),
     linear-gradient(180deg, #fbfcf6 0%, #f4f6ed 52%, #eef1e7 100%) !important;
   color: #17171f !important;
+}
+
+.z-app-wrapper,
+.z-main-area,
+.z-panel-scroll,
+.z-final-landing,
+.z-final-section {
+  max-width: 100vw !important;
+  overflow-x: clip !important;
 }
 
 body::after,
@@ -124,15 +136,15 @@ body::after,
 .z-final-logo,
 .mobile-header img[src*="zodi-logo"],
 [data-z-mobile-drawer="true"] img[src*="zodi-logo"] {
-  background: linear-gradient(135deg, #050609 0%, #181b22 58%, #0b0d10 100%) !important;
-  border: 1px solid rgba(156,255,0,.38) !important;
-  box-shadow: 0 18px 48px rgba(5,6,9,.22), inset 0 0 28px rgba(156,255,0,.10) !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
 }
 
 .z-sidebar-logo,
 .z-final-logo {
   border-radius: 8px !important;
-  padding: 10px 16px !important;
+  padding: 0 !important;
 }
 
 .z-sidebar-logo img,
@@ -141,7 +153,10 @@ body::after,
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
-  filter: drop-shadow(0 0 10px rgba(156,255,0,.45)) !important;
+  filter:
+    drop-shadow(0 2px 1px rgba(0,0,0,.72))
+    drop-shadow(0 10px 18px rgba(0,0,0,.28))
+    drop-shadow(0 0 9px rgba(156,255,0,.32)) !important;
 }
 
 .z-desktop-header,
@@ -156,16 +171,27 @@ body::after,
 }
 
 .mobile-header img[src*="zodi-logo"] {
-  padding: 8px 10px !important;
-  max-width: 92px !important;
-  max-height: 38px !important;
-  border-radius: 7px !important;
+  padding: 0 !important;
+  max-width: 86px !important;
+  max-height: 34px !important;
+  border-radius: 0 !important;
+  filter:
+    drop-shadow(0 2px 1px rgba(0,0,0,.75))
+    drop-shadow(0 8px 14px rgba(0,0,0,.25))
+    drop-shadow(0 0 8px rgba(156,255,0,.34)) !important;
 }
 
 [data-z-mobile-menu-button="true"] {
+  position: fixed !important;
+  top: calc(14px + env(safe-area-inset-top)) !important;
+  right: 14px !important;
+  z-index: 1300 !important;
   background: #11131a !important;
   border: 1px solid rgba(156,255,0,.42) !important;
   box-shadow: 0 14px 36px rgba(5,6,9,.20) !important;
+  border-radius: 12px !important;
+  width: 46px !important;
+  height: 46px !important;
 }
 
 [data-z-mobile-drawer="true"] {
@@ -308,6 +334,51 @@ body::after,
 .z-final-plan.featured *,
 .z-plan-card.featured * {
   color: #11131a !important;
+}
+
+.z-plan-detail-list {
+  display: grid !important;
+  gap: 9px !important;
+  margin: 18px 0 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+.z-plan-detail-list li {
+  position: relative !important;
+  padding-left: 22px !important;
+  color: rgba(23,23,31,.78) !important;
+  font: 700 13px/1.45 var(--z-font-body, system-ui, sans-serif) !important;
+  letter-spacing: 0 !important;
+}
+
+.z-plan-detail-list li::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: .58em !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 999px !important;
+  background: #9cff00 !important;
+  box-shadow: 0 0 0 4px rgba(156,255,0,.18) !important;
+}
+
+.z-final-plan:nth-child(2) .z-plan-detail-list li::before,
+.z-final-plan.featured .z-plan-detail-list li::before,
+.z-plan-card.featured .z-plan-detail-list li::before {
+  background: #11131a !important;
+  box-shadow: 0 0 0 4px rgba(17,19,26,.12) !important;
+}
+
+.z-plan-payment-note {
+  margin: 16px 0 0 !important;
+  padding: 12px !important;
+  border-radius: 8px !important;
+  background: rgba(17,19,26,.06) !important;
+  color: rgba(23,23,31,.78) !important;
+  font: 800 12px/1.45 var(--z-font-body, system-ui, sans-serif) !important;
+  letter-spacing: 0 !important;
 }
 
 .z-btn,
