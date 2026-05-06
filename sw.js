@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zodi-pwa-v11-plan-details';
+const CACHE_NAME = 'zodi-pwa-v12-community-palm';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -7,9 +7,9 @@ const APP_SHELL = [
   '/zodi-logo.png',
   '/bg-video.mp4',
   '/zodi-google-bridge-v20260505.js',
-  '/zodi-production-polish-v20260505e.js',
+  '/zodi-production-polish-v20260506a.js',
   '/zodi-ux-polish-v20260506a.css',
-  '/zodi-light-redesign-v20260506a.css'
+  '/zodi-light-redesign-v20260506b.css'
 ];
 
 self.addEventListener('install', event => {
