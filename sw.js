@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zodi-pwa-v9-mobile-menu-contrast';
+const CACHE_NAME = 'zodi-pwa-v10-light-redesign';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -8,7 +8,8 @@ const APP_SHELL = [
   '/bg-video.mp4',
   '/zodi-google-bridge-v20260505.js',
   '/zodi-production-polish-v20260505e.js',
-  '/zodi-ux-polish-v20260505e.css'
+  '/zodi-ux-polish-v20260506a.css',
+  '/zodi-light-redesign-v20260506a.css'
 ];
 
 self.addEventListener('install', event => {
