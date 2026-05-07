@@ -1,7 +1,7 @@
 // ZODI Service Worker v13
 // Strategy: network-first for documents/scripts, cache-first for assets
 
-const CACHE_VERSION = 'v13';
+const CACHE_VERSION = 'v14';
 const CACHE_NAME    = `zodi-pwa-${CACHE_VERSION}`;
 const OFFLINE_URL   = '/offline.html';
 
@@ -13,6 +13,7 @@ const APP_SHELL = [
   '/manifest.webmanifest',
   '/favicon.svg',
   '/zodi-logo.png',
+  '/zodi-pwa-icon.png',
   '/zodi-ux-polish-v20260506a.css',
   '/zodi-light-redesign-v20260506b.css',
   '/zodi-google-bridge-v20260505.js',
