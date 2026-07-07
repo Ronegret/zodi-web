@@ -2,36 +2,89 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+
+    <!-- ─── PWA ─────────────────────────────────────────────────────────── -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/zodi-pwa-icon.png" />
     <meta name="theme-color" content="#f7f8f1" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="ZODI" />
-    <title>ZODI - La app de astrologia que te mereces</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!-- ─── SEO ──────────────────────────────────────────────────────────── -->
+    <title>ZODI — La app de astrologia que te mereces</title>
+    <meta name="description" content="Horoscopo diario, carta natal, numerologia, runas y compatibilidad. Tu oraculo astral anonimo y sin suscripcion." />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="ZODI" />
+    <meta property="og:type"        content="website" />
+    <meta property="og:site_name"   content="ZODI" />
+    <meta property="og:title"       content="ZODI — La app de astrologia que te mereces" />
+    <meta property="og:description" content="Horoscopo diario, carta natal, numerologia, runas y compatibilidad. Tu oraculo astral anonimo." />
+    <meta property="og:image"       content="/zodi-logo.png" />
+    <meta name="twitter:card"       content="summary" />
+    <meta name="twitter:title"      content="ZODI — Astrologia personal" />
+    <meta name="twitter:description" content="Horoscopo diario, carta natal, numerologia y compatibilidad." />
+
+    <!-- ─── FONTS — preconnect first, then single stylesheet request ──────── -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!--
+      Space Grotesk  → body text (legible, neutral, modern)
+      Syne           → display headings (distinctive, uppercase impact)
+      DM Serif Display → quotes / horoscope copy (elegant editorial feel)
+      JetBrains Mono → labels, badges, mono accents
+    -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&family=Syne:wght@600;700;800&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- ─── COMPILED BUNDLE (Vite) ───────────────────────────────────────── -->
     <script type="module" crossorigin src="/assets/index-DtrG1ZDG.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/jsx-runtime-2UHhqg_S.js">
-    <link rel="modulepreload" crossorigin href="/assets/firebase-Da5Ak7kD.js">
-    <link rel="modulepreload" crossorigin href="/assets/proxy-juyD3h56.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-QmMRBQJv.css">
+    <link rel="modulepreload" crossorigin href="/assets/jsx-runtime-2UHhqg_S.js" />
+    <link rel="modulepreload" crossorigin href="/assets/firebase-Da5Ak7kD.js" />
+    <link rel="modulepreload" crossorigin href="/assets/proxy-juyD3h56.js" />
+    <link rel="stylesheet" crossorigin href="/assets/index-QmMRBQJv.css" />
+
+    <!-- ─── PATCH LAYERS (loaded after bundle to win specificity cascade) ── -->
     <link rel="stylesheet" href="/zodi-ux-polish-v20260506a.css" />
     <link rel="stylesheet" href="/zodi-light-redesign-v20260506b.css" />
     <script type="module" src="/zodi-google-bridge-v20260505.js"></script>
     <script type="module" src="/zodi-production-polish-v20260506a.js"></script>
   </head>
   <body>
-    <div id="cursor"><div class="cur-dot" id="curDot"></div></div>
+    <!-- Custom cursor (desktop only, injected below) -->
+    <div id="cursor" aria-hidden="true"><div class="cur-dot" id="curDot"></div></div>
+
+    <!-- React root -->
     <div id="root"></div>
+
+    <!-- Service Worker registration -->
     <script>
-      // Only load cursor effect on non-touch devices
-      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(err => {
+            console.warn('[ZODI] SW registration failed:', err);
+          });
+        });
+      }
+    </script>
+
+    <!-- Cursor effect: GPU-intensive WebGL sim, skip on touch/low-end devices -->
+    <script>
+      (function () {
+        const noHover   = !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        const prefersLess = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const lowMemory = navigator.deviceMemory != null && navigator.deviceMemory < 4;
+        if (noHover || prefersLess || lowMemory) return;
         var s = document.createElement('script');
         s.src = '/splash-cursor.js';
+        s.async = true;
         document.body.appendChild(s);
-      }
+      }());
     </script>
   </body>
 </html>

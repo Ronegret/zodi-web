@@ -1,179 +1,236 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@400;500;600;700;800&display=swap");
+/*
+ * ZODI Light Redesign — consolidated v2026-05-07
+ * Cargado como último stylesheet para ganar la cascada sobre el bundle compilado.
+ * Contiene TODA la personalización visual: tema light, tipografía, componentes.
+ */
 
-/* ZODI light redesign loaded last on purpose. */
+/* ─── 0. GOOGLE FONTS IMPORT ─────────────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&family=Syne:wght@600;700;800&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;700&display=swap");
+
+/* ─── 1. DESIGN TOKENS ───────────────────────────────────────────────────── */
 :root {
   color-scheme: light;
-  --z-acid: #9cff00;
-  --z-acid-dim: rgba(156,255,0,.18);
-  --z-acid-border: rgba(125,214,0,.36);
-  --z-purple: #6136f5;
-  --z-bone: #17171f;
-  --z-bone-dim: rgba(23,23,31,.72);
-  --z-black: #f7f8f1;
-  --z-dark: #ffffff;
-  --z-dark-2: #ffffff;
-  --z-dark-3: #f0f2e9;
-  --z-dark-4: #e7eadf;
-  --z-gray: #6d7068;
-  --z-border: rgba(18,22,16,.12);
-  --z-font-body: "Space Grotesk", "Segoe UI", Arial, sans-serif;
+
+  /* Brand */
+  --z-acid:         #9cff00;
+  --z-acid-dim:     rgba(156, 255, 0, .18);
+  --z-acid-glow:    rgba(156, 255, 0, .42);
+  --z-acid-border:  rgba(125, 214, 0, .36);
+  --z-purple:       #6136f5;
+  --z-purple-light: #7c56ff;
+  --z-purple-dim:   rgba(97, 54, 245, .12);
+  --z-red:          #de324d;
+  --z-cyan:         #01a8b9;
+
+  /* Light palette */
+  --z-bone:      #17171f;
+  --z-bone-dim:  rgba(23, 23, 31, .68);
+  --z-black:     #f7f8f1;
+  --z-dark:      #ffffff;
+  --z-dark-2:    #ffffff;
+  --z-dark-3:    #f0f2e9;
+  --z-dark-4:    #e7eadf;
+  --z-gray:      #6d7068;
+  --z-gray-dim:  rgba(23, 23, 31, .09);
+  --z-border:    rgba(18, 22, 16, .12);
+
+  /* Shadows */
+  --neon-acid: 0 8px 28px rgba(156, 255, 0, .28);
+
+  /* Typography */
+  --z-font-body:    "Space Grotesk", "Segoe UI", Arial, sans-serif;
   --z-font-display: "Space Grotesk", "Segoe UI", Arial, sans-serif;
-  --z-font-serif: "DM Serif Display", Georgia, serif;
+  --z-font-heading: "Syne", "Space Grotesk", system-ui, sans-serif;
+  --z-font-serif:   "DM Serif Display", Georgia, serif;
+  --z-font-mono:    "JetBrains Mono", "Fira Code", monospace;
 }
 
-html,
-body {
+/* ─── 2. GLOBAL RESET / BASE ─────────────────────────────────────────────── */
+html, body {
   max-width: 100% !important;
   overflow-x: clip !important;
   overscroll-behavior-x: none !important;
   background:
-    radial-gradient(circle at 9% 0%, rgba(156,255,0,.16), transparent 28%),
+    radial-gradient(circle at 9% 0%, rgba(156, 255, 0, .16), transparent 28%),
     linear-gradient(180deg, #fbfcf6 0%, #f4f6ed 52%, #eef1e7 100%) !important;
   color: #17171f !important;
   font-family: var(--z-font-body) !important;
+  text-rendering: geometricPrecision;
 }
 
-.z-app-wrapper,
-.z-main-area,
-.z-panel-scroll,
-.z-final-landing,
-.z-final-section {
-  max-width: 100vw !important;
-  overflow-x: clip !important;
+html {
+  scroll-padding-top: 84px;
 }
 
-body::after,
-.orb,
+body {
+  position: relative;
+}
+
+* { min-width: 0; }
+
+img, video, canvas, svg { max-width: 100%; }
+
+/* Remove animated background orbs — the light gradient already does the job */
+body::after, .orb,
 .z-panel-modern::before,
 .z-tarot-panel::before {
   display: none !important;
 }
 
-.z-app-wrapper,
-.z-main-area,
-.z-panel-scroll,
-.z-panel-modern,
-.z-perfil-panel,
-.z-settings-panel,
-.z-tarot-panel,
-.panel.on,
-.z-final-landing,
-.z-final-section,
-.z-final-footer {
+/* Global font override */
+body, button, input, textarea, select,
+.z-sidebar *, .z-final-landing *, .z-panel-modern * {
+  font-family: var(--z-font-body) !important;
+  letter-spacing: 0 !important;
+}
+
+/* Serif font for editorial copy */
+.z-title-serif, .z-horoscope-quote,
+.z-oracle-card p, .z-today-aside .acid p {
+  font-family: var(--z-font-serif) !important;
+}
+
+/* ─── 3. LAYOUT ──────────────────────────────────────────────────────────── */
+.z-app-wrapper, .z-main-area, .z-panel-scroll,
+.z-panel-modern, .z-perfil-panel, .z-settings-panel,
+.z-tarot-panel, .panel.on,
+.z-final-landing, .z-final-section, .z-final-footer {
   background: transparent !important;
   color: #17171f !important;
 }
 
+.z-app-wrapper { min-height: 100dvh !important; }
+
 .z-main-area,
-.z-final-landing,
-.z-final-section,
-.z-final-footer {
+.z-final-landing, .z-final-section, .z-final-footer {
   background:
-    linear-gradient(90deg, rgba(18,22,16,.035) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(18,22,16,.035) 1px, transparent 1px),
+    linear-gradient(90deg,  rgba(18, 22, 16, .035) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(18, 22, 16, .035) 1px, transparent 1px),
     #f7f8f1 !important;
   background-size: 44px 44px !important;
 }
 
 .z-panel-scroll {
   padding: 38px clamp(20px, 4vw, 56px) 104px !important;
+  scroll-behavior: smooth;
 }
 
-.z-panel-scroll > div {
-  max-width: 1120px !important;
+.z-panel-scroll > div { max-width: 1120px !important; }
+
+.z-panel-modern, .z-chino-panel, .z-perfil-panel {
+  max-width: 1180px;
+  margin: 0 auto;
 }
 
+html, body, #root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip !important;
+}
+
+.z-app-wrapper, .z-main-area, .z-panel-scroll,
+.z-panel-modern, .z-grid, .z-layout-grid,
+.z-hub-toolbar, .z-service-grid, .z-profile-grid {
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* ─── 4. SIDEBAR ─────────────────────────────────────────────────────────── */
 .z-sidebar {
   background:
-    radial-gradient(circle at 40% -12%, rgba(156,255,0,.32), transparent 34%),
+    radial-gradient(circle at 40% -12%, rgba(156, 255, 0, .32), transparent 34%),
     linear-gradient(180deg, #11131a 0%, #07080d 100%) !important;
-  border-right: 1px solid rgba(156,255,0,.38) !important;
-  box-shadow: 22px 0 70px rgba(8,10,12,.16) !important;
+  border-right: 1px solid rgba(156, 255, 0, .38) !important;
+  box-shadow: 22px 0 70px rgba(8, 10, 12, .16) !important;
 }
 
-.z-sidebar *,
-[data-z-mobile-drawer="true"] * {
-  color: #ffffff !important;
+.z-sidebar *, [data-z-mobile-drawer="true"] * { color: #ffffff !important; }
+
+.z-sidebar-brand {
+  padding: 24px 20px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, .12) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
 }
 
-[data-z-mobile-drawer="true"] {
-  background:
-    radial-gradient(circle at 25% 0%, rgba(156,255,0,.20), transparent 32%),
-    linear-gradient(180deg, #11131a 0%, #07080d 100%) !important;
-  border-right: 1px solid rgba(156,255,0,.38) !important;
-  box-shadow: 28px 0 70px rgba(5,6,9,.36) !important;
-  color: #ffffff !important;
-  max-width: min(86vw, 340px) !important;
-  overflow-y: auto !important;
-  padding-bottom: calc(24px + env(safe-area-inset-bottom)) !important;
-}
-
-[data-z-mobile-drawer="true"] button {
-  color: #ffffff !important;
-  border-radius: 8px !important;
-}
-
-[data-z-mobile-drawer="true"] button:not([aria-label="Cerrar menu"]):hover,
-[data-z-mobile-drawer="true"] button:not([aria-label="Cerrar menu"]):focus-visible {
-  background: rgba(156,255,0,.13) !important;
-}
-
-[data-z-mobile-drawer="true"] button[aria-label="Cerrar menu"] {
-  background: rgba(255,255,255,.10) !important;
-  border: 1px solid rgba(255,255,255,.18) !important;
-  color: #ffffff !important;
-  width: 38px !important;
-  height: 38px !important;
-  display: grid !important;
-  place-items: center !important;
-}
-
-[data-z-mobile-scrim="true"] {
-  background: rgba(7,8,13,.52) !important;
-  backdrop-filter: blur(5px) !important;
-}
-
-.z-menu-section-title,
-[data-z-mobile-drawer="true"] div[style*="font-size: 9px"] {
-  color: #9cff00 !important;
-}
-
-.z-sidebar-logo,
-.z-final-logo,
-.mobile-header img[src*="zodi-logo"],
-[data-z-mobile-drawer="true"] img[src*="zodi-logo"] {
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-}
-
-.z-sidebar-logo,
-.z-final-logo {
-  border-radius: 8px !important;
+.z-sidebar-logo {
+  justify-content: center !important;
+  width: 100% !important;
+  min-height: 88px !important;
+  display: flex !important;
+  align-items: center !important;
   padding: 0 !important;
+  border-radius: 8px !important;
 }
 
-.z-sidebar-logo img,
-.z-final-logo img,
-.z-final-nav img {
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
+.z-sidebar-logo img {
+  max-width: 160px !important;
+  max-height: 76px !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
   filter:
-    drop-shadow(0 2px 1px rgba(0,0,0,.72))
-    drop-shadow(0 10px 18px rgba(0,0,0,.28))
-    drop-shadow(0 0 9px rgba(156,255,0,.32)) !important;
+    drop-shadow(0 2px 1px rgba(0, 0, 0, .72))
+    drop-shadow(0 10px 18px rgba(0, 0, 0, .28))
+    drop-shadow(0 0 9px rgba(156, 255, 0, .32)) !important;
+  transform-origin: left center;
 }
 
-.z-desktop-header,
-.mobile-header,
-.mob-bottom-nav,
-.z-final-nav {
-  background: rgba(255,255,255,.92) !important;
+.z-menu-section-title, .z-sidebar .flabel { color: rgba(156, 255, 0, .86) !important; }
+
+.z-sidebar .z-nav-link,
+.z-sidebar-user,
+.z-sidebar .z-user-name { color: rgba(255, 255, 255, .88) !important; }
+
+.z-sidebar .z-nav-link {
+  border-left: 0 !important;
+  margin: 3px 12px !important;
+  padding: 12px 14px !important;
+  border-radius: 8px !important;
+}
+
+.z-sidebar .z-nav-link:hover,
+.z-sidebar .z-nav-link.active {
+  background: rgba(156, 255, 0, .14) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 0 0 1px rgba(156, 255, 0, .24) !important;
+}
+
+/* ─── 5. HEADERS & NAV ───────────────────────────────────────────────────── */
+.z-desktop-header, .mobile-header, .mob-bottom-nav, .z-final-nav {
+  background: rgba(255, 255, 255, .92) !important;
   color: #17171f !important;
-  border-color: rgba(18,22,16,.10) !important;
-  box-shadow: 0 16px 50px rgba(18,22,16,.08) !important;
+  border-color: rgba(18, 22, 16, .10) !important;
+  box-shadow: 0 16px 50px rgba(18, 22, 16, .08) !important;
   backdrop-filter: blur(18px) saturate(1.08) !important;
+}
+
+.mobile-header, .z-desktop-header {
+  width: 100%;
+  max-width: 100vw;
+  overflow: hidden;
+}
+
+.mobile-header {
+  min-height: 64px !important;
+  padding: 8px 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.mobile-header img,
+.mobile-header .z-final-logo img,
+.z-final-logo img,
+.z-sidebar-logo img {
+  width: auto !important;
+  height: auto !important;
+  max-height: 48px !important;
+  max-width: min(168px, 48vw) !important;
+  object-fit: contain !important;
+  flex: 0 1 auto !important;
 }
 
 .mobile-header img[src*="zodi-logo"] {
@@ -182,9 +239,76 @@ body::after,
   max-height: 34px !important;
   border-radius: 0 !important;
   filter:
-    drop-shadow(0 2px 1px rgba(0,0,0,.75))
-    drop-shadow(0 8px 14px rgba(0,0,0,.25))
-    drop-shadow(0 0 8px rgba(156,255,0,.34)) !important;
+    drop-shadow(0 2px 1px rgba(0, 0, 0, .75))
+    drop-shadow(0 8px 14px rgba(0, 0, 0, .25))
+    drop-shadow(0 0 8px rgba(156, 255, 0, .34)) !important;
+}
+
+.z-connected-user {
+  background: rgba(255, 255, 255, .78) !important;
+  border: 1px solid rgba(18, 22, 16, .10) !important;
+  box-shadow: 0 12px 34px rgba(18, 22, 16, .08) !important;
+  padding: 10px 14px !important;
+  border-radius: 8px !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.z-connected-user strong,
+.z-connected-user small,
+.z-header-icon { color: #17171f !important; }
+
+.z-connected-user strong,
+.z-connected-user small { overflow: hidden; text-overflow: ellipsis; }
+
+/* Mobile drawer */
+[data-z-mobile-drawer="true"] {
+  background:
+    radial-gradient(circle at 36% 0%, rgba(156, 255, 0, .26), transparent 34%),
+    linear-gradient(180deg, #11131a 0%, #050609 100%) !important;
+  border-right: 1px solid rgba(156, 255, 0, .48) !important;
+  box-shadow: 28px 0 70px rgba(5, 6, 9, .36) !important;
+  color: #ffffff !important;
+  max-width: min(86vw, 340px) !important;
+  overflow-y: auto !important;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom)) !important;
+}
+
+[data-z-mobile-drawer="true"] * { color: #ffffff !important; }
+
+[data-z-mobile-drawer="true"] button {
+  color: #ffffff !important;
+  border-radius: 8px !important;
+}
+
+[data-z-mobile-drawer="true"] button:not([aria-label="Cerrar menu"]):hover,
+[data-z-mobile-drawer="true"] button:not([aria-label="Cerrar menu"]):focus-visible {
+  background: rgba(156, 255, 0, .13) !important;
+}
+
+[data-z-mobile-drawer="true"] button[aria-label="Cerrar menu"] {
+  background: rgba(255, 255, 255, .10) !important;
+  border: 1px solid rgba(255, 255, 255, .18) !important;
+  width: 38px !important;
+  height: 38px !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+[data-z-mobile-drawer="true"] img[src*="zodi-logo"] {
+  width: auto !important;
+  height: auto !important;
+  max-width: 142px !important;
+  max-height: 46px !important;
+  object-fit: contain !important;
+}
+
+[data-z-mobile-drawer="true"] div[style*="font-size: 9px"],
+.z-menu-section-title { color: #9cff00 !important; }
+
+[data-z-mobile-scrim="true"] {
+  background: rgba(7, 8, 13, .52) !important;
+  backdrop-filter: blur(5px) !important;
 }
 
 [data-z-mobile-menu-button="true"] {
@@ -193,28 +317,26 @@ body::after,
   right: 14px !important;
   z-index: 1300 !important;
   background: #11131a !important;
-  border: 1px solid rgba(156,255,0,.42) !important;
-  box-shadow: 0 14px 36px rgba(5,6,9,.20) !important;
+  border: 1px solid rgba(156, 255, 0, .42) !important;
+  box-shadow: 0 14px 36px rgba(5, 6, 9, .20) !important;
   border-radius: 12px !important;
   width: 46px !important;
   height: 46px !important;
 }
 
-[data-z-mobile-drawer="true"] {
-  background:
-    radial-gradient(circle at 36% 0%, rgba(156,255,0,.26), transparent 34%),
-    linear-gradient(180deg, #11131a 0%, #050609 100%) !important;
-  border-right: 1px solid rgba(156,255,0,.48) !important;
+/* Bottom nav */
+.mob-bottom-nav {
+  border-top: 1px solid rgba(18, 22, 16, .10) !important;
+  box-shadow: 0 -18px 50px rgba(18, 22, 16, .12) !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  overflow: hidden !important;
 }
 
-.mob-bottom-nav button {
-  color: #73786f !important;
-}
+.mob-bottom-nav button { color: #73786f !important; }
 
 .mob-bottom-nav button.active-tab,
-.mob-bottom-nav button.active-tab small {
-  color: #17171f !important;
-}
+.mob-bottom-nav button.active-tab small { color: #17171f !important; }
 
 .mob-bottom-nav button.active-tab span {
   width: 32px !important;
@@ -224,98 +346,60 @@ body::after,
   background: #11131a !important;
   color: #9cff00 !important;
   border-radius: 8px !important;
-  box-shadow: 0 10px 28px rgba(5,6,9,.18) !important;
+  box-shadow: 0 10px 28px rgba(5, 6, 9, .18) !important;
 }
 
-.z-card,
-.z-card-luxe,
-.z-service-card-clean,
-.z-profile-card,
-.z-focus-card,
-.z-reading-card,
-.z-oracle-card,
-.z-month-card,
-.rbox,
-.result-box,
-.card,
-.card-mystic,
-.z-plan-clean,
-.z-choice-card,
-.z-plan-card,
-.z-offer-banner,
-.z-final-module,
-.z-final-tone,
-.z-final-plan,
-.z-final-feature,
-.z-final-profile-card,
-.z-login-shell .z-card {
-  background: rgba(255,255,255,.92) !important;
-  border: 1px solid rgba(18,22,16,.12) !important;
+/* ─── 6. CARDS ───────────────────────────────────────────────────────────── */
+.z-card, .z-card-luxe, .z-service-card-clean, .z-profile-card,
+.z-focus-card, .z-reading-card, .z-oracle-card, .z-month-card,
+.rbox, .result-box, .card, .card-mystic,
+.z-plan-clean, .z-choice-card, .z-plan-card, .z-offer-banner,
+.z-final-module, .z-final-tone, .z-final-plan, .z-final-feature,
+.z-final-profile-card, .z-login-shell .z-card {
+  background: rgba(255, 255, 255, .92) !important;
+  border: 1px solid rgba(18, 22, 16, .12) !important;
   color: #17171f !important;
   border-radius: 8px !important;
-  box-shadow: 0 20px 60px rgba(18,22,16,.10), 0 1px 0 rgba(255,255,255,.88) inset !important;
+  box-shadow: 0 20px 60px rgba(18, 22, 16, .10), 0 1px 0 rgba(255, 255, 255, .88) inset !important;
 }
 
-.z-card *,
-.z-card-luxe *,
-.z-service-card-clean *,
-.z-profile-card *,
-.z-reading-card *,
-.z-oracle-card *,
-.z-month-card *,
-.rbox *,
-.result-box *,
-.card *,
-.card-mystic *,
-.z-final-module *,
-.z-final-tone *,
-.z-final-plan *,
-.z-final-feature * {
+.z-card *, .z-card-luxe *, .z-service-card-clean *,
+.z-profile-card *, .z-reading-card *, .z-oracle-card *,
+.z-month-card *, .rbox *, .result-box *, .card *, .card-mystic *,
+.z-final-module *, .z-final-tone *, .z-final-plan *, .z-final-feature * {
   text-shadow: none !important;
 }
 
-.z-card p,
-.z-card small,
-.z-service-copy p,
-.z-lead,
-.z-explore-head .z-lead,
-.z-panel-head .z-lead,
-.panel-sub,
-.z-reading-body,
-.rbox-body,
-.z-profile-note,
-.z-final-module p,
-.z-final-tone p,
-.z-final-plan p,
-.z-final-sub,
-.z-final-section p,
-.z-final-footer p {
-  color: rgba(23,23,31,.72) !important;
+.z-card:hover, .z-service-card-clean:hover,
+.z-service-card-clean:focus-visible, .z-plan-clean:hover {
+  border-color: rgba(125, 214, 0, .48) !important;
+  box-shadow: 0 26px 80px rgba(18, 22, 16, .13), 0 0 0 4px rgba(156, 255, 0, .15) !important;
+  transform: translateY(-2px);
 }
 
-.z-title-lg,
-.z-title-xl,
-.z-today-title,
-.panel-title,
-.z-service-copy h3,
-.z-card h1,
-.z-card h2,
-.z-card h3,
-.rbox-title,
-.z-final-h1,
-.z-final-section h2,
-.z-final-footer h2 {
+/* Acid/featured variants */
+.z-card.acid, .z-card-luxe.acid, .z-focus-card.acid,
+.z-offer-banner, .z-name-reader {
+  background:
+    linear-gradient(135deg, rgba(156, 255, 0, .22), rgba(255, 255, 255, .92) 42%),
+    #ffffff !important;
+  border-color: rgba(125, 214, 0, .42) !important;
+}
+
+/* ─── 7. TYPOGRAPHY ──────────────────────────────────────────────────────── */
+.z-title-lg, .z-title-xl, .z-today-title, .panel-title,
+.z-service-copy h3, .z-card h1, .z-card h2, .z-card h3,
+.rbox-title, .z-final-h1, .z-final-section h2, .z-final-footer h2 {
   color: #17171f !important;
   text-shadow: none !important;
   letter-spacing: 0 !important;
+  font-family: var(--z-font-heading) !important;
+  text-wrap: balance;
 }
 
-.z-title-lg strong,
-.z-title-xl span,
-.z-today-title strong,
-.panel-title b,
-.z-title-lg b,
-.z-title-xl b {
+.z-title-lg strong, .z-title-xl span,
+.z-today-title strong, .panel-title b,
+.z-title-lg b, .z-title-xl b {
   color: #11131a !important;
   background: linear-gradient(90deg, #11131a, #4b18d8) !important;
   -webkit-background-clip: text !important;
@@ -323,25 +407,207 @@ body::after,
   -webkit-text-fill-color: transparent !important;
 }
 
-.z-badge,
-.mtab.on,
-.z-btn-acid,
-.z-plan-clean.on,
+.z-lead, .z-card p, .z-card small, .z-service-copy p,
+.z-explore-head .z-lead, .z-panel-head .z-lead,
+.panel-sub, .z-reading-body, .rbox-body, .rbox-text,
+.z-profile-note, .z-profile-list dd,
+.z-offer-banner p, .z-final-sub, .z-final-section p, .z-final-footer p {
+  color: rgba(23, 23, 31, .72) !important;
+}
+
+.flabel, .z-service-copy .flabel, .z-offer-kicker,
+.panel-label, .rbox-meta, .z-sync-time, .z-profile-list dt {
+  color: #4f6d00 !important;
+}
+
+.z-badge, .flabel, .mtab, .z-btn,
+.z-profile-meta span, .z-plan-clean small {
+  letter-spacing: .06em !important;
+  overflow-wrap: anywhere;
+}
+
+/* Horoscope / oracle serif copy */
+.z-horoscope-quote {
+  font-size: clamp(29px, 3.1vw, 44px) !important;
+  line-height: 1.13 !important;
+  color: #17171f !important;
+  text-shadow: none !important;
+}
+
+.z-oracle-card p, .z-today-aside .acid p {
+  font-size: clamp(22px, 2.1vw, 30px) !important;
+  line-height: 1.22 !important;
+  color: #343840 !important;
+}
+
+.zodi-rich-content {
+  font-size: 15px;
+  line-height: 1.85;
+  color: rgba(23, 23, 31, .72);
+}
+
+.zodi-rich-content strong { color: #17171f; font-weight: 900; }
+
+.z-rich-mini {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+  color: var(--z-bone-dim);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.z-rich-mini p, .z-compat-why { margin: 0; }
+.z-rich-mini strong, .z-compat-why strong { color: var(--z-bone); }
+
+.z-compat-why { margin: 0 0 24px; color: var(--z-bone-dim); line-height: 1.7; }
+
+/* ─── 8. BUTTONS & INTERACTIVE ───────────────────────────────────────────── */
+.z-btn, button, .finput, .fselect, .ftextarea, .z-hub-search {
+  border-radius: 8px !important;
+}
+
+.z-btn, .z-month-card .z-btn, .z-today-aside .z-btn {
+  border-radius: 8px !important;
+  min-height: 56px !important;
+  box-shadow: 0 14px 34px rgba(18, 22, 16, .12) !important;
+  border: 1px solid rgba(18, 22, 16, .14) !important;
+}
+
+.z-month-card .z-btn,
+.z-today-aside .z-btn:not(.z-btn-acid) {
+  background: #11131a !important;
+  color: #ffffff !important;
+}
+
+.z-badge, .mtab.on, .z-btn-acid, .z-plan-clean.on,
 .z-plan-card.featured,
-.z-final-plan:nth-child(2),
-.z-final-plan.featured {
+.z-final-plan:nth-child(2), .z-final-plan.featured {
   background: #9cff00 !important;
   color: #11131a !important;
   border-color: #9cff00 !important;
-  box-shadow: 0 12px 34px rgba(156,255,0,.28) !important;
+  box-shadow: 0 12px 34px rgba(156, 255, 0, .28) !important;
 }
 
-.z-final-plan:nth-child(2) *,
-.z-final-plan.featured *,
-.z-plan-card.featured * {
+.z-badge { color: #071006 !important; }
+
+.z-btn-acid { color: #071006 !important; background: #b4ff20 !important; }
+
+.z-final-plan:nth-child(2) *, .z-final-plan.featured *,
+.z-plan-card.featured * { color: #11131a !important; }
+
+.z-btn-outline, .z-header-icon, .mtab,
+.finput, .fselect, .ftextarea, .z-hub-search {
+  background: rgba(255, 255, 255, .94) !important;
+  border: 1px solid rgba(18, 22, 16, .14) !important;
+  color: #17171f !important;
+  box-shadow: 0 10px 26px rgba(18, 22, 16, .06) !important;
+}
+
+.finput:focus, .fselect:focus, .ftextarea:focus, .z-hub-search:focus {
+  border-color: rgba(125, 214, 0, .70) !important;
+  box-shadow: 0 0 0 4px rgba(156, 255, 0, .18), 0 14px 34px rgba(18, 22, 16, .08) !important;
+}
+
+.finput::placeholder, .ftextarea::placeholder,
+.z-hub-search::placeholder { color: rgba(23, 23, 31, .44) !important; }
+
+.mtab, button.mtab {
+  min-height: 108px !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(18, 22, 16, .16) !important;
+  box-shadow: 0 14px 36px rgba(18, 22, 16, .08) !important;
+}
+
+.mtab.on, button.mtab.on {
+  background: #9cff00 !important;
   color: #11131a !important;
 }
 
+/* ─── 9. SIGN / IMAGE DISPLAY ────────────────────────────────────────────── */
+.z-today-sign, .z-profile-avatar {
+  background: radial-gradient(circle, #ffffff 0%, #eef4df 100%) !important;
+  border: 1px solid rgba(125, 214, 0, .42) !important;
+  box-shadow: 0 24px 70px rgba(18, 22, 16, .12) !important;
+}
+
+.z-sign-img, .z-today-sign img, .z-profile-avatar img,
+img[src*="/signs/"], img[src*="/chinese/"] {
+  mix-blend-mode: normal !important;
+  filter: drop-shadow(0 24px 38px rgba(18, 22, 16, .18)) saturate(1.05) !important;
+}
+
+.z-service-mark {
+  background: #11131a !important;
+  border-color: rgba(156, 255, 0, .54) !important;
+  color: #ffffff !important;
+  box-shadow: 0 16px 38px rgba(5, 6, 9, .16) !important;
+}
+
+.z-onboarding-card img, .z-sidebar-logo img, .z-logo, img[src*="zodi-logo"] {
+  width: auto !important;
+  max-width: min(260px, 82vw) !important;
+  height: auto !important;
+  object-fit: contain !important;
+  aspect-ratio: auto !important;
+}
+
+/* ─── 10. PROFILE ────────────────────────────────────────────────────────── */
+.z-profile-hero {
+  background:
+    linear-gradient(135deg, rgba(17, 19, 26, .96), rgba(17, 19, 26, .82)),
+    radial-gradient(circle at 80% 10%, rgba(156, 255, 0, .30), transparent 32%) !important;
+  border: 1px solid rgba(156, 255, 0, .34) !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  padding: clamp(22px, 4vw, 38px) !important;
+  box-shadow: 0 24px 80px rgba(18, 22, 16, .16) !important;
+  display: grid !important;
+  grid-template-columns: minmax(140px, 210px) minmax(0, 1fr) !important;
+  gap: clamp(16px, 3vw, 28px) !important;
+  align-items: center !important;
+  margin-bottom: 34px !important;
+}
+
+.z-profile-hero *, .z-profile-hero .z-title-lg,
+.z-profile-hero .z-profile-note {
+  color: #ffffff !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+.z-profile-avatar {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(170, 255, 0, .22);
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.z-profile-avatar img {
+  width: 86%;
+  height: 86%;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 32px rgba(170, 255, 0, .14));
+}
+
+.z-profile-tabs {
+  background: rgba(255, 255, 255, .76) !important;
+  border: 1px solid rgba(18, 22, 16, .10) !important;
+  box-shadow: 0 16px 46px rgba(18, 22, 16, .08) !important;
+  border-radius: 8px !important;
+  padding: 8px !important;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(245, 241, 232, .1);
+}
+
+.z-profile-tabs .mtab { flex: 0 0 auto; box-shadow: none !important; }
+
+/* ─── 11. PLAN CARDS ─────────────────────────────────────────────────────── */
 .z-plan-detail-list {
   display: grid !important;
   gap: 9px !important;
@@ -353,9 +619,8 @@ body::after,
 .z-plan-detail-list li {
   position: relative !important;
   padding-left: 22px !important;
-  color: rgba(23,23,31,.78) !important;
+  color: rgba(23, 23, 31, .78) !important;
   font: 700 13px/1.45 var(--z-font-body, system-ui, sans-serif) !important;
-  letter-spacing: 0 !important;
 }
 
 .z-plan-detail-list li::before {
@@ -367,222 +632,201 @@ body::after,
   height: 8px !important;
   border-radius: 999px !important;
   background: #9cff00 !important;
-  box-shadow: 0 0 0 4px rgba(156,255,0,.18) !important;
+  box-shadow: 0 0 0 4px rgba(156, 255, 0, .18) !important;
 }
 
 .z-final-plan:nth-child(2) .z-plan-detail-list li::before,
 .z-final-plan.featured .z-plan-detail-list li::before,
 .z-plan-card.featured .z-plan-detail-list li::before {
   background: #11131a !important;
-  box-shadow: 0 0 0 4px rgba(17,19,26,.12) !important;
+  box-shadow: 0 0 0 4px rgba(17, 19, 26, .12) !important;
 }
 
 .z-plan-payment-note {
   margin: 16px 0 0 !important;
   padding: 12px !important;
   border-radius: 8px !important;
-  background: rgba(17,19,26,.06) !important;
-  color: rgba(23,23,31,.78) !important;
+  background: rgba(17, 19, 26, .06) !important;
+  color: rgba(23, 23, 31, .78) !important;
   font: 800 12px/1.45 var(--z-font-body, system-ui, sans-serif) !important;
-  letter-spacing: 0 !important;
 }
 
-.z-btn,
-button,
-.finput,
-.fselect,
-.ftextarea,
-.z-hub-search {
-  border-radius: 8px !important;
+/* ─── 12. NUMEROLOGY CARDS ───────────────────────────────────────────────── */
+.z-num-card.acid, .z-card.z-num-card.acid, article.z-num-card.acid {
+  background: #b4ff20 !important;
+  color: #071006 !important;
+  border-color: #b4ff20 !important;
+  box-shadow: 0 22px 70px rgba(180, 255, 32, .18) !important;
 }
 
-.z-btn-outline,
-.z-header-icon,
-.mtab,
-.finput,
-.fselect,
-.ftextarea,
-.z-hub-search {
-  background: rgba(255,255,255,.94) !important;
-  border: 1px solid rgba(18,22,16,.14) !important;
-  color: #17171f !important;
-  box-shadow: 0 10px 26px rgba(18,22,16,.06) !important;
+.z-num-card.acid *, .z-card.z-num-card.acid *, article.z-num-card.acid * {
+  color: #071006 !important;
+  text-shadow: none !important;
 }
 
-.finput::placeholder,
-.ftextarea::placeholder,
-.z-hub-search::placeholder {
-  color: rgba(23,23,31,.44) !important;
+.z-num-card.purple, .z-card.z-num-card.purple, article.z-num-card.purple {
+  background: #16122a !important;
+  color: #f5f1e8 !important;
+  border-color: rgba(155, 111, 232, .75) !important;
 }
 
+.z-num-card.purple *, .z-card.z-num-card.purple *, article.z-num-card.purple * {
+  color: #f5f1e8 !important;
+  text-shadow: none !important;
+}
+
+.z-num-card.purple .z-num-value,
+.z-card.z-num-card.purple .z-num-value,
+article.z-num-card.purple .z-num-value { color: #d8c5ff !important; }
+
+/* ─── 13. EXPLORE GRID ───────────────────────────────────────────────────── */
+.z-explore-head {
+  text-align: left !important;
+  margin-bottom: 34px !important;
+}
+
+.z-explore-head .z-title-lg {
+  font-size: clamp(42px, 8vw, 92px) !important;
+  line-height: .94 !important;
+  margin-top: 18px !important;
+}
+
+.z-service-grid-clean {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
+  gap: 16px !important;
+}
+
+.z-service-card-clean {
+  min-height: 210px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 18px !important;
+  padding: 24px !important;
+  cursor: pointer;
+  transition: transform .2s ease, border-color .2s ease !important;
+}
+
+/* Explore icon marks */
 .z-service-mark {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", system-ui, sans-serif;
+  font-size: 27px;
+  line-height: 1;
+  border-radius: 16px;
+}
+
+/* ─── 14. LOGIN SHELL ────────────────────────────────────────────────────── */
+.z-login-shell, .z-onboarding-shell {
+  background:
+    radial-gradient(circle at 8% 8%, rgba(156, 255, 0, .20), transparent 26%),
+    linear-gradient(180deg, #fbfcf6 0%, #eef1e7 100%) !important;
+}
+
+.z-login-shell h1, .z-login-shell h2,
+.z-onboarding-card h1, .z-onboarding-card h2 {
+  color: #17171f !important;
+  text-shadow: none !important;
+}
+
+.z-login-shell .finput, .z-login-shell input {
+  background: #ffffff !important;
+  color: #17171f !important;
+  -webkit-text-fill-color: #17171f !important;
+  border: 2px solid rgba(18, 22, 16, .18) !important;
+  box-shadow: 0 12px 26px rgba(18, 22, 16, .08) !important;
+  caret-color: #17171f !important;
+}
+
+.z-login-shell .finput::placeholder,
+.z-login-shell input::placeholder {
+  color: rgba(23, 23, 31, .54) !important;
+  -webkit-text-fill-color: rgba(23, 23, 31, .54) !important;
+  opacity: 1 !important;
+}
+
+.z-login-shell form div, .z-login-shell a { font-size: 16px !important; color: #4a5148 !important; }
+.z-login-shell span { color: #17171f !important; font-size: 17px !important; font-weight: 800 !important; }
+
+.z-login-shell > .z-btn-outline,
+.z-login-shell > button.z-btn-outline {
   background: #11131a !important;
-  border-color: rgba(156,255,0,.54) !important;
   color: #ffffff !important;
-  box-shadow: 0 16px 38px rgba(5,6,9,.16) !important;
+  border: 1px solid rgba(156, 255, 0, .5) !important;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, .18) !important;
+  min-width: 112px !important;
 }
 
-.z-today-sign,
-.z-profile-avatar {
-  background: radial-gradient(circle, #ffffff 0%, #eef4df 100%) !important;
-  border: 1px solid rgba(125,214,0,.42) !important;
-  box-shadow: 0 24px 70px rgba(18,22,16,.12) !important;
+/* Google button */
+.z-login-shell button[style*="background: white"],
+.z-login-shell button[style*="background:white"] {
+  min-height: 58px;
+  border: 1px solid rgba(255, 255, 255, .88) !important;
+  box-shadow: 5px 5px 0 #8eff00;
+  transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
-.z-sign-img,
-.z-today-sign img,
-.z-profile-avatar img,
-img[src*="/signs/"],
-img[src*="/chinese/"] {
-  mix-blend-mode: normal !important;
-  filter: drop-shadow(0 24px 38px rgba(18,22,16,.18)) saturate(1.05) !important;
+.z-login-shell button[style*="background: white"]:hover,
+.z-login-shell button[style*="background:white"]:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 7px 7px 0 #8eff00;
 }
 
-@media (min-width: 769px) {
-  .mobile-header {
-    display: none !important;
-  }
-}
-
-@media (max-width: 768px) {
-  .z-desktop-header {
-    display: none !important;
-  }
-}
-
-.z-final-marquee,
-.z-final-track {
-  background: #11131a !important;
-  color: #ffffff !important;
-}
-
-.z-final-marquee *,
-.z-final-track * {
-  color: #ffffff !important;
-}
-
+/* ─── 15. LANDING PAGE ───────────────────────────────────────────────────── */
 .z-final-hero {
   background:
-    radial-gradient(circle at 70% 20%, rgba(156,255,0,.20), transparent 30%),
+    radial-gradient(circle at 70% 20%, rgba(156, 255, 0, .20), transparent 30%),
     linear-gradient(180deg, #f7f8f1 0%, #eef1e7 100%) !important;
 }
 
 .z-final-hero::after {
   background:
-    linear-gradient(180deg, rgba(247,248,241,.04) 0%, rgba(247,248,241,.54) 56%, #f7f8f1 96%) !important;
+    linear-gradient(180deg, rgba(247, 248, 241, .04) 0%, rgba(247, 248, 241, .54) 56%, #f7f8f1 96%) !important;
 }
 
-.z-profile-hero {
-  background:
-    linear-gradient(135deg, rgba(17,19,26,.96), rgba(17,19,26,.82)),
-    radial-gradient(circle at 80% 10%, rgba(156,255,0,.30), transparent 32%) !important;
-  color: #ffffff !important;
-}
-
-.z-profile-hero *,
-.z-profile-hero .z-title-lg,
-.z-profile-hero .z-profile-note {
-  color: #ffffff !important;
-  -webkit-text-fill-color: currentColor !important;
-}
-
-@media (max-width: 900px) {
-  .z-panel-scroll {
-    padding: 22px 14px 94px !important;
-  }
-
-  .z-main-area,
-  .z-final-landing,
-  .z-final-section,
-  .z-final-footer {
-    background-size: 34px 34px !important;
-  }
-}
-
-@media (max-width: 768px) {
-  .mobile-header {
-    min-height: calc(68px + env(safe-area-inset-top)) !important;
-  }
-
-  .z-offer-actions {
-    grid-template-columns: 1fr !important;
-  }
-
-  .z-service-card-clean {
-    min-height: 158px !important;
-  }
-
-  .z-title-lg,
-  .z-title-xl,
-  .z-today-title {
-    font-size: clamp(38px, 12vw, 58px) !important;
-    line-height: .92 !important;
-  }
-}
-
-/* Final readability and product polish pass. */
-body,
-button,
-input,
-textarea,
-select,
-.z-sidebar *,
-.z-final-landing *,
-.z-panel-modern * {
-  font-family: var(--z-font-body) !important;
-  letter-spacing: 0 !important;
-}
-
-.z-title-serif,
-.z-horoscope-quote,
-.z-oracle-card p,
-.z-today-aside .acid p {
-  font-family: var(--z-font-serif) !important;
-}
-
-.z-sidebar-brand,
-.z-sidebar-logo,
-.z-sidebar-logo button {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: 100% !important;
-  text-align: center !important;
-}
-
-.z-sidebar-logo img,
-.z-final-logo img,
-.z-final-nav img,
-.z-login-shell img[src*="zodi-logo"],
-.mobile-header img[src*="zodi-logo"] {
-  filter:
-    drop-shadow(0 2px 2px rgba(0,0,0,.86))
-    drop-shadow(0 8px 14px rgba(0,0,0,.34))
-    drop-shadow(0 0 8px rgba(156,255,0,.46)) !important;
-}
-
-.z-final-profile,
-.z-final-profile-card {
-  background: rgba(255,255,255,.96) !important;
+.z-final-h1, .z-final-h1 span,
+.z-final-section h2, .z-final-footer h2 {
   color: #17171f !important;
-  border: 1px solid rgba(18,22,16,.14) !important;
-  box-shadow: 0 22px 60px rgba(18,22,16,.12) !important;
+  text-shadow: none !important;
 }
 
-.z-final-profile *,
-.z-final-profile-card * {
+.z-final-marquee, .z-final-track {
+  background: #11131a !important;
+  color: #ffffff !important;
+  border-block: 1px solid rgba(156, 255, 0, .24) !important;
+}
+
+.z-final-marquee *, .z-final-track * { color: #ffffff !important; }
+
+.z-final-nav {
+  background: rgba(255, 255, 255, .82) !important;
+  box-shadow: 0 16px 50px rgba(18, 22, 16, .08) !important;
+  border-bottom: 1px solid rgba(18, 22, 16, .10) !important;
+}
+
+.z-final-logo img, .z-final-nav img {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  filter:
+    drop-shadow(0 2px 2px rgba(0, 0, 0, .86))
+    drop-shadow(0 8px 14px rgba(0, 0, 0, .34))
+    drop-shadow(0 0 8px rgba(156, 255, 0, .46)) !important;
+}
+
+.z-final-profile, .z-final-profile-card {
+  background: rgba(255, 255, 255, .96) !important;
+  color: #17171f !important;
+  border: 1px solid rgba(18, 22, 16, .14) !important;
+  box-shadow: 0 22px 60px rgba(18, 22, 16, .12) !important;
+}
+
+.z-final-profile *, .z-final-profile-card * {
   color: #17171f !important;
   -webkit-text-fill-color: currentColor !important;
   opacity: 1 !important;
-}
-
-.z-final-profile img,
-.z-final-profile .z-final-avatar,
-.z-profile-avatar,
-.z-profile-avatar img {
-  background: #11131a !important;
-  border-radius: 999px !important;
-  box-shadow: 0 14px 34px rgba(0,0,0,.24), 0 0 0 2px rgba(156,255,0,.55) !important;
 }
 
 .z-footer-tags {
@@ -593,11 +837,10 @@ select,
   align-items: center !important;
 }
 
-.z-footer-tags *,
-.z-footer-tags span {
+.z-footer-tags *, .z-footer-tags span {
   background: #11131a !important;
   color: #ffffff !important;
-  border: 1px solid rgba(156,255,0,.42) !important;
+  border: 1px solid rgba(156, 255, 0, .42) !important;
   border-radius: 999px !important;
   padding: 10px 14px !important;
   font-weight: 800 !important;
@@ -606,47 +849,105 @@ select,
   white-space: nowrap !important;
 }
 
-.z-login-shell > .z-btn-outline,
-.z-login-shell > button.z-btn-outline {
+/* ─── 16. COMMUNITY / PALM WIDGETS ──────────────────────────────────────── */
+.z-palm-widget, .z-community-wall, .z-friend-compat {
+  margin-top: 34px !important;
+  padding: clamp(22px, 4vw, 38px) !important;
+}
+
+.z-widget-kicker {
+  display: inline-flex !important;
+  background: #9cff00 !important;
+  color: #11131a !important;
+  padding: 8px 12px !important;
+  border-radius: 999px !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+}
+
+.z-palm-widget h2, .z-community-wall h2, .z-friend-compat h2 {
+  margin: 16px 0 10px !important;
+  font-size: clamp(28px, 4vw, 46px) !important;
+  line-height: 1 !important;
+}
+
+.z-palm-grid, .z-compat-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  margin: 18px 0 !important;
+}
+
+.z-compat-grid { grid-template-columns: 1.2fr 1fr 1fr !important; }
+
+.z-palm-grid label {
+  display: grid !important;
+  gap: 10px !important;
+  min-height: 170px !important;
+  padding: 16px !important;
+  border-radius: 8px !important;
+  background: #f7f8f1 !important;
+  border: 1px dashed rgba(18, 22, 16, .24) !important;
+}
+
+.z-palm-grid img {
+  display: none;
+  width: 100% !important;
+  max-height: 210px !important;
+  object-fit: cover !important;
+  border-radius: 8px !important;
+}
+
+.z-palm-result, .z-compat-result, .z-post-list article {
+  margin-top: 16px !important;
+  padding: 18px !important;
+  border-radius: 8px !important;
   background: #11131a !important;
   color: #ffffff !important;
-  border: 1px solid rgba(156,255,0,.5) !important;
-  box-shadow: 0 14px 36px rgba(0,0,0,.18) !important;
-  min-width: 112px !important;
+  line-height: 1.55 !important;
 }
 
-.z-login-shell .finput,
-.z-login-shell input {
-  background: #ffffff !important;
-  color: #17171f !important;
-  -webkit-text-fill-color: #17171f !important;
-  border: 2px solid rgba(18,22,16,.18) !important;
-  box-shadow: 0 12px 26px rgba(18,22,16,.08) !important;
-  caret-color: #17171f !important;
-}
-
-.z-login-shell .finput::placeholder,
-.z-login-shell input::placeholder,
-.z-palm-widget input::placeholder,
-.z-community-wall textarea::placeholder,
-.z-friend-compat input::placeholder {
-  color: rgba(23,23,31,.54) !important;
-  -webkit-text-fill-color: rgba(23,23,31,.54) !important;
+.z-palm-result *, .z-compat-result *, .z-post-list article * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
   opacity: 1 !important;
 }
 
-.z-login-shell form div,
-.z-login-shell a {
-  font-size: 16px !important;
-  color: #4a5148 !important;
-}
+.z-post-list { display: grid !important; gap: 12px !important; margin-top: 18px !important; }
+.z-post-list article strong { display: block !important; margin-bottom: 6px !important; }
+.z-post-list article p { margin: 0 !important; }
 
-.z-login-shell span {
+.z-community-wall textarea {
+  min-height: 112px !important;
+  width: 100% !important;
+  resize: vertical !important;
+  background: #ffffff !important;
   color: #17171f !important;
-  font-size: 17px !important;
-  font-weight: 800 !important;
+  border: 1px solid rgba(18, 22, 16, .18) !important;
+  border-radius: 8px !important;
+  padding: 16px !important;
 }
 
+.z-friend-compat input, .z-friend-compat select,
+.z-palm-widget input[type="file"] {
+  background: #ffffff !important;
+  color: #17171f !important;
+  border: 1px solid rgba(18, 22, 16, .18) !important;
+  border-radius: 8px !important;
+  min-height: 52px !important;
+  padding: 12px !important;
+}
+
+.z-palm-widget input::placeholder,
+.z-community-wall textarea::placeholder,
+.z-friend-compat input::placeholder {
+  color: rgba(23, 23, 31, .54) !important;
+  -webkit-text-fill-color: rgba(23, 23, 31, .54) !important;
+  opacity: 1 !important;
+}
+
+/* ─── 17. MISC COMPONENTS ────────────────────────────────────────────────── */
 .z-sign-logo {
   width: 42px !important;
   height: 42px !important;
@@ -654,7 +955,7 @@ select,
   background: #11131a !important;
   border-radius: 12px !important;
   padding: 4px !important;
-  box-shadow: 0 10px 24px rgba(0,0,0,.16), 0 0 0 2px rgba(156,255,0,.5) !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .16), 0 0 0 2px rgba(156, 255, 0, .5) !important;
 }
 
 .z-connected-symbol {
@@ -675,177 +976,242 @@ select,
   font-weight: 800 !important;
 }
 
-.mtab,
-button.mtab {
-  min-height: 108px !important;
-  color: #17171f !important;
-  background: #ffffff !important;
-  border: 1px solid rgba(18,22,16,.16) !important;
-  box-shadow: 0 14px 36px rgba(18,22,16,.08) !important;
+.z-profile-toast {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  padding: 12px 18px;
+  border-radius: 6px;
+  background: var(--z-acid);
+  color: var(--z-black);
+  font-family: var(--z-font-mono);
+  font-size: 11px;
+  font-weight: 900;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .35);
 }
 
-.mtab.on,
-button.mtab.on {
-  background: #9cff00 !important;
-  color: #11131a !important;
+.z-profile-toast.error { background: var(--z-red); color: white; }
+
+/* Chinese panel */
+.z-chinese-current {
+  display: grid;
+  grid-template-columns: minmax(180px, 320px) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(20px, 4vw, 44px);
+  margin-bottom: 30px;
 }
 
-.z-btn,
-.z-month-card .z-btn,
-.z-today-aside .z-btn {
-  border-radius: 8px !important;
-  min-height: 56px !important;
-  box-shadow: 0 14px 34px rgba(18,22,16,.12) !important;
-  border: 1px solid rgba(18,22,16,.14) !important;
+.z-chinese-art {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(0, 245, 255, .18);
+  background: radial-gradient(circle at 50% 48%, rgba(0, 245, 255, .12), rgba(19, 18, 36, .75) 62%, transparent 63%);
+  border-radius: 50%;
+  overflow: hidden;
 }
 
-.z-month-card .z-btn,
-.z-today-aside .z-btn:not(.z-btn-acid) {
-  background: #11131a !important;
-  color: #ffffff !important;
+.z-chinese-art img { width: 92%; height: 92%; object-fit: contain; }
+
+.z-chinese-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 10px;
+  margin: 26px 0;
 }
 
-.z-horoscope-quote {
-  font-size: clamp(29px, 3.1vw, 44px) !important;
-  line-height: 1.13 !important;
-  color: #17171f !important;
+.z-chinese-chip {
+  min-height: 98px;
+  padding: 10px;
+  border: 1px solid rgba(245, 241, 232, .12);
+  background: rgba(7, 7, 15, .42);
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform .2s ease, border-color .2s ease;
 }
 
-.z-oracle-card p,
-.z-today-aside .acid p {
-  font-size: clamp(22px, 2.1vw, 30px) !important;
-  line-height: 1.22 !important;
-  color: #343840 !important;
-}
+.z-chinese-chip.on { border-color: var(--z-cyan); background: rgba(0, 245, 255, .1); }
+.z-chinese-chip:hover { transform: translateY(-2px); }
+.z-chinese-chip img { width: 54px; height: 54px; }
+.z-chinese-chip span { font-family: var(--z-font-mono); font-size: 10px; text-transform: uppercase; }
 
-.z-palm-widget,
-.z-community-wall,
-.z-friend-compat {
-  margin-top: 34px !important;
-  padding: clamp(22px, 4vw, 38px) !important;
-}
-
-.z-widget-kicker {
-  display: inline-flex !important;
-  background: #9cff00 !important;
-  color: #11131a !important;
-  padding: 8px 12px !important;
-  border-radius: 999px !important;
-  font-size: 12px !important;
-  font-weight: 800 !important;
-  text-transform: uppercase !important;
-}
-
-.z-palm-widget h2,
-.z-community-wall h2,
-.z-friend-compat h2 {
-  margin: 16px 0 10px !important;
-  font-size: clamp(28px, 4vw, 46px) !important;
-  line-height: 1 !important;
-}
-
-.z-palm-grid,
-.z-compat-grid {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 16px !important;
-  margin: 18px 0 !important;
-}
-
-.z-compat-grid {
-  grid-template-columns: 1.2fr 1fr 1fr !important;
-}
-
-.z-palm-grid label {
-  display: grid !important;
-  gap: 10px !important;
-  min-height: 170px !important;
-  padding: 16px !important;
-  border-radius: 8px !important;
-  background: #f7f8f1 !important;
-  border: 1px dashed rgba(18,22,16,.24) !important;
-}
-
-.z-palm-grid img {
-  display: none;
-  width: 100% !important;
-  max-height: 210px !important;
-  object-fit: cover !important;
-  border-radius: 8px !important;
-}
-
-.z-palm-result,
-.z-compat-result,
-.z-post-list article {
-  margin-top: 16px !important;
-  padding: 18px !important;
-  border-radius: 8px !important;
-  background: #11131a !important;
-  color: #ffffff !important;
-  line-height: 1.55 !important;
-}
-
-.z-palm-result *,
-.z-compat-result *,
-.z-post-list article * {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-.z-post-list {
-  display: grid !important;
-  gap: 12px !important;
-  margin-top: 18px !important;
-}
-
-.z-post-list article strong {
-  display: block !important;
-  margin-bottom: 6px !important;
-}
-
-.z-post-list article p {
-  margin: 0 !important;
-}
-
-.z-community-wall textarea {
-  min-height: 112px !important;
-  width: 100% !important;
-  resize: vertical !important;
-  background: #ffffff !important;
-  color: #17171f !important;
-  border: 1px solid rgba(18,22,16,.18) !important;
-  border-radius: 8px !important;
-  padding: 16px !important;
-}
-
-.z-friend-compat input,
-.z-friend-compat select,
-.z-palm-widget input[type="file"] {
-  background: #ffffff !important;
-  color: #17171f !important;
-  border: 1px solid rgba(18,22,16,.18) !important;
-  border-radius: 8px !important;
-  min-height: 52px !important;
-  padding: 12px !important;
+/* ─── 18. RESPONSIVE ─────────────────────────────────────────────────────── */
+@media (min-width: 769px) {
+  .mobile-header { display: none !important; }
 }
 
 @media (max-width: 768px) {
-  .z-footer-tags {
+  .z-desktop-header { display: none !important; }
+}
+
+@media (max-width: 900px) {
+  html, body, #root, .z-app-wrapper, .z-main-area {
+    max-width: 100vw !important;
+    overflow-x: clip !important;
+  }
+
+  .z-panel-modern, .z-chino-panel, .z-perfil-panel { max-width: 100%; }
+
+  .z-panel-scroll {
+    padding: 22px 14px 94px !important;
+    overflow-x: clip !important;
+    overscroll-behavior-x: none;
+  }
+
+  .z-main-area, .z-final-landing, .z-final-section, .z-final-footer {
+    background-size: 34px 34px !important;
+  }
+
+  .z-title-lg, .z-title-xl, .z-today-title {
+    font-size: clamp(38px, 12vw, 58px) !important;
+    line-height: .92 !important;
+  }
+
+  .z-hub-toolbar { grid-template-columns: 1fr !important; gap: 12px !important; }
+
+  .z-hub-filters {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
     justify-content: flex-start !important;
+    padding-bottom: 8px;
+    scrollbar-width: none;
   }
 
-  .z-palm-grid,
-  .z-compat-grid {
-    grid-template-columns: 1fr !important;
+  .z-hub-filters::-webkit-scrollbar { display: none; }
+
+  .z-chinese-current { grid-template-columns: 1fr; text-align: center; }
+  .z-chinese-art { width: min(260px, 76vw); justify-self: center; }
+
+  .z-card, .z-card-luxe, .z-service-card-clean,
+  .z-profile-card, .z-reading-card, .z-offer-banner {
+    box-shadow: 0 16px 46px rgba(18, 22, 16, .10) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-header {
+    height: calc(64px + env(safe-area-inset-top)) !important;
+    min-height: calc(68px + env(safe-area-inset-top)) !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1100 !important;
+    background: rgba(255, 255, 255, .92) !important;
+    backdrop-filter: blur(16px) !important;
+    border-bottom: 1px solid rgba(18, 22, 16, .12) !important;
   }
 
-  .z-horoscope-quote {
-    font-size: 30px !important;
+  [data-z-mobile-header-shell="true"],
+  .mobile-header > div:first-child {
+    height: 100% !important;
+    display: grid !important;
+    grid-template-columns: 54px minmax(0, 1fr) 54px !important;
+    align-items: center !important;
+    padding: env(safe-area-inset-top) 12px 0 !important;
+    overflow: hidden !important;
+    background: transparent !important;
   }
 
-  .z-oracle-card p,
-  .z-today-aside .acid p {
-    font-size: 22px !important;
+  [data-z-mobile-logo="true"],
+  .mobile-header img[src*="zodi-logo"] {
+    max-width: 104px !important;
+    max-height: 38px !important;
   }
+
+  [data-z-mobile-menu-button="true"] {
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 14px !important;
+    background: rgba(245, 241, 232, .08) !important;
+    border: 1px solid rgba(245, 241, 232, .22) !important;
+    justify-self: end !important;
+  }
+
+  [data-z-mobile-scrim="true"] {
+    z-index: 1190 !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+  }
+
+  [data-z-mobile-drawer="true"] {
+    z-index: 1200 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    height: 100dvh !important;
+    width: min(88vw, 360px) !important;
+    max-width: min(88vw, 360px) !important;
+    padding: calc(env(safe-area-inset-top) + 18px) 18px calc(env(safe-area-inset-bottom) + 24px) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .z-sidebar {
+    display: flex !important;
+    position: fixed !important;
+    top: 0 !important; bottom: 0 !important; left: 0 !important;
+    width: min(86vw, 340px) !important;
+    height: 100dvh !important;
+    z-index: 1200 !important;
+    transform: translateX(-105%) !important;
+    transition: transform .28s cubic-bezier(.22, 1, .36, 1) !important;
+    overflow-y: auto !important;
+  }
+
+  .z-sidebar.mob-open { transform: translateX(0) !important; }
+
+  .z-panel-scroll { padding: 16px 14px 96px !important; }
+
+  .z-offer-actions { grid-template-columns: 1fr !important; }
+  .z-service-card-clean { min-height: 158px !important; padding: 20px !important; }
+
+  .z-card, .z-card-luxe, .z-reading-card,
+  .z-focus-card, .z-name-reader, .z-ai-card { padding: 20px !important; }
+
+  .z-profile-hero {
+    grid-template-columns: 90px minmax(0, 1fr) !important;
+  }
+
+  .z-profile-avatar { width: 86px !important; height: 86px !important; }
+
+  .z-name-result-grid, .z-num-grid { grid-template-columns: 1fr !important; }
+
+  .z-palm-grid, .z-compat-grid { grid-template-columns: 1fr !important; }
+
+  .z-horoscope-quote { font-size: 30px !important; }
+
+  .z-oracle-card p, .z-today-aside .acid p { font-size: 22px !important; }
+
+  .zodi-rich-content { font-size: 14px; line-height: 1.78; }
+
+  .z-footer-tags { justify-content: flex-start !important; }
+
+  .z-chinese-picker { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .z-chinese-chip { min-height: 86px; padding: 8px 4px; }
+  .z-chinese-chip img { width: 48px; height: 48px; }
+}
+
+@media (max-width: 760px) {
+  .z-profile-hero, .z-profile-grid { grid-template-columns: 1fr !important; }
+  .z-profile-hero { text-align: center; }
+  .z-profile-avatar { width: min(210px, 68vw); justify-self: center; }
+  .z-profile-tabs { margin-inline: -14px; padding-inline: 14px; }
+}
+
+@media (max-width: 620px) {
+  .z-login-shell { align-items: flex-start !important; overflow-y: auto !important; }
+  .z-login-shell > button { position: absolute !important; }
+  .z-login-shell .z-card { padding: 28px !important; }
+  .z-login-shell h1 { font-size: 34px !important; }
+}
+
+@media (max-width: 420px) {
+  .z-title-lg, .z-title-xl { font-size: clamp(32px, 14vw, 48px) !important; }
+  .z-chinese-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
