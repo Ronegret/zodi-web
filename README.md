@@ -1,36 +1,31 @@
-# ZODI — AI Astral Oracle (PWA)
+<div align="center">
 
-ZODI is an installable **Progressive Web App** that delivers AI-powered
-astrology: horoscope, tarot, natal charts and numerology — with a freemium
-model, Google sign-in and offline support.
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=20,12,24&height=170&section=header&text=ZODI%20%C2%B7%20PWA&fontSize=42&fontColor=ffffff&fontAlignY=38&desc=Static%20PWA%20build%20%28Hostinger%29&descSize=16&descAlignY=60&animation=fadeIn" alt="ZODI · PWA" />
 
-<!-- 📸 Tip: add a screenshot here → ![ZODI](zodi-logo.png) -->
+</div>
+
+## 🧭 Overview
+The static PWA build of ZODI for Hostinger, with a PHP API bridge for AI readings, Firebase authentication and offline support.
 
 ## ✨ Features
-- AI-generated readings (horoscope, tarot, natal chart, numerology)
-- Installable PWA with offline fallback and service worker
+- Installable PWA with offline fallback & service worker
 - Firebase Google authentication
 - PHP API bridge for AI requests
-- Multilingual support
+- Multilingual
 
-## 🛠️ Tech stack
-`PWA` · `HTML / CSS / JS` · `PHP (API bridge)` · `Firebase Auth` · `Service Worker`
+## 🛠️ Built with
+`PWA` · `HTML/CSS/JS` · `PHP` · `Firebase` · `Service Worker`
 
 ## 🚀 Run locally
 ```bash
 python -m http.server 4173 --bind 127.0.0.1
 # open http://127.0.0.1:4173/
 ```
-> For local UX review, `zodi-google-bridge.js` creates a local Google-style
-> review profile. In production it uses Firebase Google sign-in.
 
-## 📦 Production deploy
-Upload the public files (`index.html`, `api.php`, `manifest.webmanifest`,
-assets…) to the Hostinger public root. See `SECURITY.md` for details.
 
-## 🔗 Links
-[Case study](https://www.rodrigonegrete.es/zodi/) · [Portfolio](https://www.rodrigonegrete.es)
+---
 
-## 👤 Author
-**Rodrigo Negrete** — AI Product Designer & Automation Architect
-[LinkedIn](https://linkedin.com/in/rodrigonegretearos)
+<div align="center">
+<sub>Made by <b>Rodrigo Negrete</b> — AI Product Designer &amp; Automation Architect<br/>
+<a href="https://www.rodrigonegrete.es">Portfolio</a> · <a href="https://linkedin.com/in/rodrigonegretearos">LinkedIn</a> · <a href="https://github.com/Ronegret">GitHub</a></sub>
+</div>
