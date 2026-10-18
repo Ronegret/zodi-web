@@ -1,60 +1,36 @@
-# ZODI Hostinger Neon PWA
+# ZODI — AI Astral Oracle (PWA)
 
-ZODI is a static PWA build for Hostinger with a PHP API bridge for AI readings, Firebase authentication, and local review support.
+ZODI is an installable **Progressive Web App** that delivers AI-powered
+astrology: horoscope, tarot, natal charts and numerology — with a freemium
+model, Google sign-in and offline support.
 
-## Run locally
+<!-- 📸 Tip: add a screenshot here → ![ZODI](zodi-logo.png) -->
 
-```powershell
+## ✨ Features
+- AI-generated readings (horoscope, tarot, natal chart, numerology)
+- Installable PWA with offline fallback and service worker
+- Firebase Google authentication
+- PHP API bridge for AI requests
+- Multilingual support
+
+## 🛠️ Tech stack
+`PWA` · `HTML / CSS / JS` · `PHP (API bridge)` · `Firebase Auth` · `Service Worker`
+
+## 🚀 Run locally
+```bash
 python -m http.server 4173 --bind 127.0.0.1
+# open http://127.0.0.1:4173/
 ```
+> For local UX review, `zodi-google-bridge.js` creates a local Google-style
+> review profile. In production it uses Firebase Google sign-in.
 
-Open:
+## 📦 Production deploy
+Upload the public files (`index.html`, `api.php`, `manifest.webmanifest`,
+assets…) to the Hostinger public root. See `SECURITY.md` for details.
 
-```text
-http://127.0.0.1:4173/
-```
+## 🔗 Links
+[Case study](https://www.rodrigonegrete.es/zodi/) · [Portfolio](https://www.rodrigonegrete.es)
 
-The in-app browser can block Google popups on localhost. For local UX review, `zodi-google-bridge.js` creates a local Google-style review profile. In production it uses Firebase Google sign-in.
-
-## Production deploy
-
-Upload the public files in this directory to the Hostinger public root:
-
-- `index.html`
-- `api.php`
-- `manifest.webmanifest`
-- `sw.js`
-- `assets/`
-- `signs/`
-- media and image assets used by the app
-- `zodi-google-bridge.js`
-- `zodi-ux-polish.css`
-
-After deploy, verify:
-
-- Firebase Authentication has Google enabled.
-- The production domain is listed in Firebase Authorized domains.
-- The service worker cache version in `sw.js` changes when assets change.
-
-## API secrets
-
-Never commit API keys.
-
-`api.php` reads the Anthropic/Claude key from one of these server-side locations:
-
-1. `CLAUDE_API_KEY` environment variable.
-2. `../.zodi-secret.php`, one level above the public web root.
-
-Example secret file outside `public_html`:
-
-```php
-<?php
-return ['CLAUDE_API_KEY' => 'replace_with_real_key'];
-```
-
-Do not place `.zodi-secret.php` inside this repository or the public web root.
-
-## Notes
-
-This folder currently contains the deployed build artifacts rather than the original React source project. Treat changes here as production patching unless/until the source app is restored.
-
+## 👤 Author
+**Rodrigo Negrete** — AI Product Designer & Automation Architect
+[LinkedIn](https://linkedin.com/in/rodrigonegretearos)
